@@ -24,5 +24,6 @@ namespace NBU_Mailer_2016
         {
             InitializeComponent();
         }
+
     }
 }
