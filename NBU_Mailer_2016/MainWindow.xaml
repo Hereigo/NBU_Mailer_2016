@@ -7,6 +7,7 @@
         mc:Ignorable="d"
         Title="NBU-Mail Uploader (Plakhtiy A.Net Development © 2016)" Height="350" Width="525" Icon="Envelope.ico">
     <Grid>
-        
+        <TextBox x:Name="textBox_4_Tests_Only" Margin="10" TextWrapping="Wrap" Text="TextBox" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto"/>
+
     </Grid>
 </Window>
