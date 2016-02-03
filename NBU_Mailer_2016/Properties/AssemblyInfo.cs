@@ -7,19 +7,19 @@ using System.Windows;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("NBU_Mailer_2016")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Plakhtiy A. NBU-Mailer 2016")]
+[assembly: AssemblyDescription("Plakhtiy A. NBU-Mailer 2016")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("NBU_Mailer_2016")]
-[assembly: AssemblyCopyright("Copyright ©  2016")]
+[assembly: AssemblyProduct("Plakhtiy A. NBU-Mailer 2016")]
+[assembly: AssemblyCopyright("Plakhtiy A.Net Development © 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
 // COM, set the ComVisible attribute to true on that type.
-[assembly: ComVisible(false)]
+[assembly: ComVisible(true)]
 
 //In order to begin building localizable applications, set 
 //<UICulture>CultureYouAreCodingWith</UICulture> in your .csproj file

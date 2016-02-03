@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NBU_Mailer_2016"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="NBU-Mail Uploader (Plakhtiy A.Net Development © 2016)" Height="350" Width="525" Icon="Envelope.ico">
     <Grid>
         
     </Grid>

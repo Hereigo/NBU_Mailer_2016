@@ -25,5 +25,44 @@ namespace NBU_Mailer_2016
             InitializeComponent();
         }
 
+
+        private void InitStaticParams()
+        {
+            // 
+        }
+
+
+        private void ReadTodayEnvelopesList()
+        {
+            
+
+            // FOREACH - IF NOT EXISTS IN TODAY LOG-FILE
+
+            // ...
+
+            
+        }
+
+
+        private void RunEveryTenMinutes()
+        {
+            // 1. IF NOT SUNDAY
+
+            // 2. IF LATER THAN 23:00 - Send/Upload Log + Create ALL BackUps IF NOT YET!
+
+            // 3. IF EARLIER THAN 23:00
+
+            //      - 
+
+            //      - 
+
+            //      - 
+
+            //      - 
+
+        }
+
+
+
     }
 }
