@@ -32,7 +32,9 @@ namespace NBU_Mailer_2016
 
         static string NbuRootDir;
 
-        static string envelopesTodayPath;
+        static string envelTodayDirName = "ARH\\";
+
+        static string envelTodayShortPath;
 
 
         public MainWindow()
@@ -40,11 +42,11 @@ namespace NBU_Mailer_2016
             InitializeComponent();
             InitializeParameters();
 
-            // TEMPORARY DEBUGGING !!!!!!!
-            // TEMPORARY DEBUGGING !!!!!!!
-            // TEMPORARY DEBUGGING !!!!!!!
-            foreach (var item in GetTodayEnvelopesList())
-                textBox_4_Tests_Only.Text += Environment.NewLine + item;
+            // TODO: Inject TIMER !
+            // TODO: Inject TIMER !
+            // TODO: Inject TIMER !
+
+            RunEveryTenMinutes();
         }
 
 
@@ -76,6 +78,7 @@ namespace NBU_Mailer_2016
                 else
                 {
                     string readedString = File.ReadAllText(settsFile).Trim();
+
                     if (Directory.Exists(readedString))
                     {
                         NbuRootDir = readedString;
@@ -96,25 +99,56 @@ namespace NBU_Mailer_2016
         }
 
 
-        private List<string> GetTodayEnvelopesList()
+        // GET LIST OF ALL TODAY ENVELOPES:
+        private FileInfo[] GetTodayEnvelopesList()
         {
             // SET TODAY ENVELOPES PATH EVERY RUN BECAUSE DEPENDS ON DATE !!!
 
-            envelopesTodayPath = NbuRootDir + "ARH\\A" + DateTime.Now.ToString("ddMMyy") + "\\";
+            envelTodayShortPath = "A" + DateTime.Now.ToString("ddMMyy") + "\\";
 
-            List<string> todayNewEnvelopes = new List<string>();
+            FileInfo[] todayEnvelopes =
+                new DirectoryInfo(NbuRootDir + envelTodayDirName + envelTodayShortPath).GetFiles();
 
-            foreach (FileInfo envelope in new DirectoryInfo(envelopesTodayPath).GetFiles())
-            {
-                todayNewEnvelopes.Add(envelope.Name);
-            }
-
-            return todayNewEnvelopes;
+            return todayEnvelopes;
         }
 
 
+        // RUN QUERY OF ALL SHEDULLED TASKS :
         private void RunEveryTenMinutes()
         {
+            // TEMPORARY DEBUGGING !!!!!!!
+            // TEMPORARY DEBUGGING !!!!!!!
+            // TEMPORARY DEBUGGING !!!!!!!
+
+            FileInfo[] todayEnvelopes = GetTodayEnvelopesList();
+
+            if (todayEnvelopes.Length > 0)
+            {
+                for (int i = 0; i < todayEnvelopes.Length; i++)
+                {
+                    //  FILL ENVELOPE PROPS FOR EVERY ENVEL-FILE:
+
+                    Envelope env = new Envelope(todayEnvelopes[i]);
+
+                    textBox_4_Tests_Only.Text += Environment.NewLine + "===================================";
+                    foreach (PropertyInfo propInfo in env.GetType().GetProperties())
+                    {
+                        textBox_4_Tests_Only.Text += Environment.NewLine + propInfo.GetValue(env, null);
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("No New Envelopes.");
+            }
+
+
+            // TODO: CHECK LOG IF ENVEL NOT LOADED YET !!!
+            // TODO: CHECK LOG IF ENVEL NOT LOADED YET !!!
+            // TODO: CHECK LOG IF ENVEL NOT LOADED YET !!!
+
+
+
             // 1. IF NOT SUNDAY
 
             // 2. IF LATER THAN 23:00 - Send/Upload Log + Create ALL BackUps IF NOT YET!
