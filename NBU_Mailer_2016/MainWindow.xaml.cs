@@ -54,6 +54,10 @@ namespace NBU_Mailer_2016
         // - USEFUL CODE-SNIPPET :)  !!!!!!!!!!!!!!!
         // - USEFUL CODE-SNIPPET :)  !!!!!!!!!!!!!!!
         //
+        // using NLog;
+        // using System.Reflection;
+        // public static Logger nLogger = LogManager.GetCurrentClassLogger();
+        //
         // string methodName = MethodInfo.GetCurrentMethod().Name;
         // try{ }
         // catch (Exception exc) { 
@@ -126,19 +130,28 @@ namespace NBU_Mailer_2016
         // RUN QUERY OF ALL SHEDULLED TASKS :
         private void RunEveryTenMinutes()
         {
-            // TEMPORARY DEBUGGING !!!!!!!
-            // TEMPORARY DEBUGGING !!!!!!!
-            // TEMPORARY DEBUGGING !!!!!!!
 
-            FileInfo[] todayEnvelopes = GetEnvelopesListForDate(DateTime.Now);
+        }
+
+
+        private void btnShowSelectedDateEnv_Click(object sender, RoutedEventArgs e)
+        {
+            textBox_4_Tests_Only.Text = "TODAY ENVELOPES:";
+
+            FileInfo[] todayEnvelopes = GetEnvelopesListForDate(dataPicker.SelectedDate.Value);
 
             if (todayEnvelopes.Length > 0)
             {
                 for (int i = 0; i < todayEnvelopes.Length; i++)
                 {
-                    //  FILL ENVELOPE PROPS FOR EVERY ENVEL-FILE:
-
+                    //  CREATE ENVELOPES FROM EVERY ENVELOPE-FILE :
                     Envelope env = new Envelope(todayEnvelopes[i]);
+
+                    // UPLOAD INTO DB
+
+
+                    // WRITE IN LOF IF OK.
+
 
                     // DEBUGGING OUTPUT TO TEXTBOX !!!
                     // DEBUGGING OUTPUT TO TEXTBOX !!!
@@ -150,13 +163,23 @@ namespace NBU_Mailer_2016
             }
             else
             {
-                MessageBox.Show("No New Envelopes.");
+                textBox_4_Tests_Only.Text += Environment.NewLine + "===================================" +
+                    "No New Envelopes.";
             }
         }
 
-        private void btnShowSelectedDateEnv_Click(object sender, RoutedEventArgs e)
+        private void btnCheckDB_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show(dataPicker.SelectedDate.Value.ToShortDateString());
+            WorkWithDB workWithBD = new WorkWithDB();
+
+            if (workWithBD.IfDbExists("test", "test", "test"))
+            {
+                MessageBox.Show("DB EXISTS !");
+            }
+            else
+            {
+                MessageBox.Show("DB NOT EXISTS !");
+            }
         }
 
 
