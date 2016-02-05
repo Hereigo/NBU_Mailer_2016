@@ -5,9 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NBU_Mailer_2016"
         mc:Ignorable="d"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         Title="NBU-Mail Uploader (Plakhtiy A.Net Development © 2016)" Height="350" Width="525" Icon="Envelope.ico">
     <Grid>
-        <TextBox x:Name="textBox_4_Tests_Only" Margin="10" TextWrapping="Wrap" Text="TODAY ENVELOPES:" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto"/>
-
+        <TextBox x:Name="textBox_4_Tests_Only" Margin="10,10,10,40" TextWrapping="Wrap" Text="TODAY ENVELOPES:" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto"/>
+        <Button x:Name="btnShowSelectedDateEnv" Content="Show Envelopes For Date" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="120, 0, 0, 10" Width="149" Height="25" RenderTransformOrigin="0.822,0.448" Click="btnShowSelectedDateEnv_Click"/>
+        <DatePicker x:Name="dataPicker" HorizontalAlignment="Left" Margin="10,0,0,10" VerticalAlignment="Bottom" SelectedDate="{x:Static sys:DateTime.Now}" Width="105"/>
     </Grid>
 </Window>

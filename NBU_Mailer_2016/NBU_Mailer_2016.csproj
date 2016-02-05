@@ -71,6 +71,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DB_Scripts\Sprusnbu_Update.CS" />
     <Compile Include="Envelope.cs" />
     <Compile Include="Git_Ignore_ALFA_TEST.cs" />
     <Compile Include="Git_Ignore_IncomFile.cs" />
@@ -93,6 +94,10 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Content Include="DB_Scripts\BanxPartners_Create.SQL" />
+    <Content Include="DB_Scripts\Envelopes_Create.SQL" />
+    <Content Include="DB_Scripts\Sprusnbu_Create.SQL" />
+    <Resource Include="DB_Scripts\_DB_Structure_Plan.txt" />
     <Content Include="Temporary_Test.dll" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

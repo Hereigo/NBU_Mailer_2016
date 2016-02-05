@@ -40,7 +40,8 @@ namespace NBU_Mailer_2016
         public MainWindow()
         {
             InitializeComponent();
-            InitializeParameters();
+
+            InitializeStartParams();
 
             // TODO: Inject TIMER !
             // TODO: Inject TIMER !
@@ -60,18 +61,24 @@ namespace NBU_Mailer_2016
         // }
 
 
-        // TODO: REFACTORE IT USING FOLDER-OPEN-DIALOG !!!
-        private void InitializeParameters()
+        // SET: START DIR, SQL DB, etc...
+        private void InitializeStartParams()
         {
-            string methodName = MethodInfo.GetCurrentMethod().Name;
-
             string settsFile = "NBU_Mailer_2016.txt";
+
+            // TODO: CREATE BD - IF NOT EXISTS !!!
+            // TODO: CREATE BD - IF NOT EXISTS !!!
+            // TODO: CREATE BD - IF NOT EXISTS !!!
+
+            string methodName = MethodInfo.GetCurrentMethod().Name;
             try
             {
                 if (!File.Exists(settsFile))
                 {
                     File.Create(settsFile);
                     MessageBox.Show("Write Correct Full Path For NbuMail Files In First Line And Save It!");
+                    // TODO: REFACTORE IT USING FOLDER-OPEN-DIALOG !!!
+                    // TODO: REFACTORE IT USING FOLDER-OPEN-DIALOG !!!
                     Process.Start(settsFile);
                     Application.Current.Shutdown();
                 }
@@ -87,6 +94,9 @@ namespace NBU_Mailer_2016
                     else
                     {
                         MessageBox.Show("Write Correct Full Path For NbuMail Files In First Line And Save It!");
+                        // TODO: REFACTORE IT USING FOLDER-OPEN-DIALOG !!!
+                        // TODO: REFACTORE IT USING FOLDER-OPEN-DIALOG !!!
+                        // TODO: REFACTORE IT USING FOLDER-OPEN-DIALOG !!!
                         Process.Start(settsFile);
                         Application.Current.Shutdown();
                     }
@@ -100,11 +110,11 @@ namespace NBU_Mailer_2016
 
 
         // GET LIST OF ALL TODAY ENVELOPES:
-        private FileInfo[] GetTodayEnvelopesList()
+        private FileInfo[] GetEnvelopesListForDate(DateTime dt)
         {
             // SET TODAY ENVELOPES PATH EVERY RUN BECAUSE DEPENDS ON DATE !!!
 
-            envelTodayShortPath = "A" + DateTime.Now.ToString("ddMMyy") + "\\";
+            envelTodayShortPath = "A" + dt.ToString("ddMMyy") + "\\";
 
             FileInfo[] todayEnvelopes =
                 new DirectoryInfo(NbuRootDir + envelTodayDirName + envelTodayShortPath).GetFiles();
@@ -120,7 +130,7 @@ namespace NBU_Mailer_2016
             // TEMPORARY DEBUGGING !!!!!!!
             // TEMPORARY DEBUGGING !!!!!!!
 
-            FileInfo[] todayEnvelopes = GetTodayEnvelopesList();
+            FileInfo[] todayEnvelopes = GetEnvelopesListForDate(DateTime.Now);
 
             if (todayEnvelopes.Length > 0)
             {
@@ -130,40 +140,45 @@ namespace NBU_Mailer_2016
 
                     Envelope env = new Envelope(todayEnvelopes[i]);
 
+                    // DEBUGGING OUTPUT TO TEXTBOX !!!
+                    // DEBUGGING OUTPUT TO TEXTBOX !!!
+                    // DEBUGGING OUTPUT TO TEXTBOX !!!
                     textBox_4_Tests_Only.Text += Environment.NewLine + "===================================";
                     foreach (PropertyInfo propInfo in env.GetType().GetProperties())
-                    {
                         textBox_4_Tests_Only.Text += Environment.NewLine + propInfo.GetValue(env, null);
-                    }
                 }
             }
             else
             {
                 MessageBox.Show("No New Envelopes.");
             }
-
-
-            // TODO: CHECK LOG IF ENVEL NOT LOADED YET !!!
-            // TODO: CHECK LOG IF ENVEL NOT LOADED YET !!!
-            // TODO: CHECK LOG IF ENVEL NOT LOADED YET !!!
-
-
-
-            // 1. IF NOT SUNDAY
-
-            // 2. IF LATER THAN 23:00 - Send/Upload Log + Create ALL BackUps IF NOT YET!
-
-            // 3. IF EARLIER THAN 23:00
-
-            //      - 
-
-            //      - 
-
-            //      - 
-
-            //      - 
-
         }
+
+        private void btnShowSelectedDateEnv_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show(dataPicker.SelectedDate.Value.ToShortDateString());
+        }
+
+
+        // TODO: CHECK LOG IF ENVEL NOT LOADED YET !!!
+        // TODO: CHECK LOG IF ENVEL NOT LOADED YET !!!
+        // TODO: CHECK LOG IF ENVEL NOT LOADED YET !!!
+
+        // 1. IF NOT SUNDAY
+
+        // 2. IF LATER THAN 23:00 - Send/Upload Log + Create ALL BackUps IF NOT YET!
+
+        // 3. IF EARLIER THAN 23:00
+
+        //      - 
+
+        //      - 
+
+        //      - 
+
+        //      - 
+
+
 
 
 
