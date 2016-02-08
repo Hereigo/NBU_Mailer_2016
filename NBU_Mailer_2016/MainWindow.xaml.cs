@@ -30,6 +30,8 @@ namespace NBU_Mailer_2016
 
         public static Logger nLogger = LogManager.GetCurrentClassLogger();
 
+        const string SQL_DATABASE = "Andrew2";
+
         static string NbuRootDir;
 
         static string envelTodayDirName = "ARH\\";
@@ -157,14 +159,29 @@ namespace NBU_Mailer_2016
                     // DEBUGGING OUTPUT TO TEXTBOX !!!
                     // DEBUGGING OUTPUT TO TEXTBOX !!!
                     textBox_4_Tests_Only.Text += Environment.NewLine + "===================================";
-                    foreach (PropertyInfo propInfo in env.GetType().GetProperties())
-                        textBox_4_Tests_Only.Text += Environment.NewLine + propInfo.GetValue(env, null);
+
+                    textBox_4_Tests_Only.Text += Environment.NewLine + "en.envelopeName - " + env.envelopeName;
+                    textBox_4_Tests_Only.Text += Environment.NewLine + "en.envelopePath - " + env.envelopePath;
+                    textBox_4_Tests_Only.Text += Environment.NewLine + "e.fileDelivered - " + env.fileDelivered;
+                    textBox_4_Tests_Only.Text += Environment.NewLine + "en.fileLocation - " + env.fileLocation;
+                    textBox_4_Tests_Only.Text += Environment.NewLine + "e..fileModified - " + env.fileModified;
+                    textBox_4_Tests_Only.Text += Environment.NewLine + "env....fileName - " + env.fileName;
+                    textBox_4_Tests_Only.Text += Environment.NewLine + "env....fileSent - " + env.fileSent;
+                    textBox_4_Tests_Only.Text += Environment.NewLine + "env....fileSize - " + env.fileSize;
+                    textBox_4_Tests_Only.Text += Environment.NewLine + "recieve_Address - " + env.recieveAddress;
+                    textBox_4_Tests_Only.Text += Environment.NewLine + "sendFromAddress - " + env.sendFromAddress;
+
+
+
+
+                    //foreach (PropertyInfo propInfo in env.GetType().GetProperties())
+                    //    textBox_4_Tests_Only.Text += Environment.NewLine + propInfo.GetValue(env, null);
                 }
             }
             else
             {
                 textBox_4_Tests_Only.Text += Environment.NewLine + "===================================" +
-                    "No New Envelopes.";
+                    Environment.NewLine + Environment.NewLine + "No New Envelopes For Selected Date.";
             }
         }
 
@@ -172,14 +189,17 @@ namespace NBU_Mailer_2016
         {
             WorkWithDB workWithBD = new WorkWithDB();
 
-            if (workWithBD.IfDbExists("test", "test", "test"))
-            {
-                MessageBox.Show("DB EXISTS !");
-            }
-            else
-            {
-                MessageBox.Show("DB NOT EXISTS !");
-            }
+            string currentWorkTable = "SPRUSNBU";
+            string dbfFileForUpload = "SPRUSNBU.DBF";
+            string dbfFileDirectory = "D:\\_SPRUSNBU";
+
+            // TODO:  W A R N I N G  SPECIAL FOR SPRUSNBU ONLY !!!!!!
+            // TODO:  W A R N I N G  SPECIAL FOR SPRUSNBU ONLY !!!!!!
+            // TODO:  W A R N I N G  SPECIAL FOR SPRUSNBU ONLY !!!!!!
+            string rez = workWithBD.CreateSprusnbuTable(SQL_DATABASE, currentWorkTable, "TEST!!!", "TEST!!!", 
+                dbfFileDirectory, dbfFileForUpload);
+
+            MessageBox.Show(rez);
         }
 
 

@@ -8,9 +8,9 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         Title="NBU-Mail Uploader (Plakhtiy A.Net Development © 2016)" Height="350" Width="525" Icon="Envelope.ico">
     <Grid>
-        <TextBox x:Name="textBox_4_Tests_Only" Margin="10,10,10,40" TextWrapping="Wrap" Text="TODAY ENVELOPES:" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto"/>
+        <TextBox x:Name="textBox_4_Tests_Only" Margin="10,10,10,40" TextWrapping="Wrap" Text="TODAY ENVELOPES:" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto" FontFamily="Consolas"/>
         <Button x:Name="btnShowSelectedDateEnv" Content="Show Envelopes For Date" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="120, 0, 0, 10" Width="149" Height="25" RenderTransformOrigin="0.822,0.448" Click="btnShowSelectedDateEnv_Click"/>
         <DatePicker x:Name="dataPicker" HorizontalAlignment="Left" Margin="10,0,0,10" VerticalAlignment="Bottom" SelectedDate="{x:Static sys:DateTime.Now}" Width="105"/>
-        <Button x:Name="btnCheckDB" Content="Check If DB Exists" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="280,0,0,10" Width="115" Height="25" RenderTransformOrigin="0.822,0.448" Click="btnCheckDB_Click"/>
+        <Button x:Name="btnCheckDB" Content="Create Sprusnbu Table" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="280,0,0,10" Width="131" Height="25" RenderTransformOrigin="0.822,0.448" Click="btnCheckDB_Click"/>
     </Grid>
 </Window>

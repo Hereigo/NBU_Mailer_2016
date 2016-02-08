@@ -23,7 +23,7 @@
                 sqlConn.Open();
 
                 // CLEAR SPRUSNBU TABLE !!!
-                
+
                 SqlCommand sqlCmd = sqlConn.CreateCommand();
                 sqlCmd.CommandText = "DELETE FROM " + table;
                 sqlCmd.ExecuteNonQuery();

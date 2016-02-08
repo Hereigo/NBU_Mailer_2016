@@ -99,6 +99,7 @@
     <Content Include="DB_Scripts\Envelopes_Create.SQL" />
     <Content Include="DB_Scripts\Sprusnbu_Create.SQL" />
     <Resource Include="DB_Scripts\_DB_Structure_Plan.txt" />
+    <Resource Include="Git_Ignore_NOT_Loaded_Example.xml" />
     <Content Include="Temporary_Test.dll" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
