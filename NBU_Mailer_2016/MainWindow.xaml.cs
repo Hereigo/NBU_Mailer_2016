@@ -30,6 +30,8 @@ namespace NBU_Mailer_2016
 
         public static Logger nLogger = LogManager.GetCurrentClassLogger();
 
+        const string settsFile = "NBU_Mailer_2016.txt";
+
         const string SQL_DATABASE = "Andrew2";
 
         static string NbuRootDir;
@@ -70,8 +72,6 @@ namespace NBU_Mailer_2016
         // SET: START DIR, SQL DB, etc...
         private void InitializeStartParams()
         {
-            string settsFile = "NBU_Mailer_2016.txt";
-
             // TODO: CREATE BD - IF NOT EXISTS !!!
             // TODO: CREATE BD - IF NOT EXISTS !!!
             // TODO: CREATE BD - IF NOT EXISTS !!!
@@ -81,12 +81,12 @@ namespace NBU_Mailer_2016
             {
                 if (!File.Exists(settsFile))
                 {
-                    File.Create(settsFile);
-                    MessageBox.Show("Write Correct Full Path For NbuMail Files In First Line And Save It!");
+                    //File.Create(settsFile);
+                    MessageBox.Show("Start Folder Is Not Set! Set It Before Use!");
                     // TODO: REFACTORE IT USING FOLDER-OPEN-DIALOG !!!
                     // TODO: REFACTORE IT USING FOLDER-OPEN-DIALOG !!!
-                    Process.Start(settsFile);
-                    Application.Current.Shutdown();
+                    // Process.Start(settsFile);
+                    // Application.Current.Shutdown();
                 }
                 else
                 {
@@ -95,16 +95,17 @@ namespace NBU_Mailer_2016
                     if (Directory.Exists(readedString))
                     {
                         NbuRootDir = readedString;
+                        textBoxForStartDir.Text = NbuRootDir;
                         MessageBox.Show("Start Folder  ==  " + NbuRootDir);
                     }
                     else
                     {
-                        MessageBox.Show("Write Correct Full Path For NbuMail Files In First Line And Save It!");
+                        MessageBox.Show("Start Folder Is Not Set! Set It Before Use!");
                         // TODO: REFACTORE IT USING FOLDER-OPEN-DIALOG !!!
                         // TODO: REFACTORE IT USING FOLDER-OPEN-DIALOG !!!
                         // TODO: REFACTORE IT USING FOLDER-OPEN-DIALOG !!!
-                        Process.Start(settsFile);
-                        Application.Current.Shutdown();
+                        // Process.Start(settsFile);
+                        // Application.Current.Shutdown();
                     }
                 }
             }
@@ -120,10 +121,21 @@ namespace NBU_Mailer_2016
         {
             // SET TODAY ENVELOPES PATH EVERY RUN BECAUSE DEPENDS ON DATE !!!
 
-            envelTodayShortPath = "A" + dt.ToString("ddMMyy") + "\\";
+            FileInfo[] todayEnvelopes;
 
-            FileInfo[] todayEnvelopes =
-                new DirectoryInfo(NbuRootDir + envelTodayDirName + envelTodayShortPath).GetFiles();
+            string methodName = MethodInfo.GetCurrentMethod().Name;
+            try
+            {
+                envelTodayShortPath = "A" + dt.ToString("ddMMyy") + "\\";
+
+                todayEnvelopes = new DirectoryInfo(NbuRootDir +
+                    envelTodayDirName + envelTodayShortPath).GetFiles();
+            }
+            catch (Exception exc)
+            {
+                todayEnvelopes = null;
+                nLogger.Error(methodName + "() - " + exc.Message);
+            }
 
             return todayEnvelopes;
         }
@@ -136,13 +148,14 @@ namespace NBU_Mailer_2016
         }
 
 
+        // UNPACK ENVELOPES AND SHOW ALL PARAMS :
         private void btnShowSelectedDateEnv_Click(object sender, RoutedEventArgs e)
         {
             textBox_4_Tests_Only.Text = "TODAY ENVELOPES:";
 
             FileInfo[] todayEnvelopes = GetEnvelopesListForDate(dataPicker.SelectedDate.Value);
 
-            if (todayEnvelopes.Length > 0)
+            if (todayEnvelopes != null && todayEnvelopes.Length > 0)
             {
                 for (int i = 0; i < todayEnvelopes.Length; i++)
                 {
@@ -158,8 +171,9 @@ namespace NBU_Mailer_2016
                     // DEBUGGING OUTPUT TO TEXTBOX !!!
                     // DEBUGGING OUTPUT TO TEXTBOX !!!
                     // DEBUGGING OUTPUT TO TEXTBOX !!!
-                    textBox_4_Tests_Only.Text += Environment.NewLine + "===================================";
-
+                    textBox_4_Tests_Only.Text += Environment.NewLine + "====================================";
+                    //foreach (PropertyInfo propInfo in env.GetType().GetProperties())
+                    //    textBox_4_Tests_Only.Text += Environment.NewLine + propInfo.GetValue(env, null);
                     textBox_4_Tests_Only.Text += Environment.NewLine + "en.envelopeName - " + env.envelopeName;
                     textBox_4_Tests_Only.Text += Environment.NewLine + "en.envelopePath - " + env.envelopePath;
                     textBox_4_Tests_Only.Text += Environment.NewLine + "e.fileDelivered - " + env.fileDelivered;
@@ -170,20 +184,15 @@ namespace NBU_Mailer_2016
                     textBox_4_Tests_Only.Text += Environment.NewLine + "env....fileSize - " + env.fileSize;
                     textBox_4_Tests_Only.Text += Environment.NewLine + "recieve_Address - " + env.recieveAddress;
                     textBox_4_Tests_Only.Text += Environment.NewLine + "sendFromAddress - " + env.sendFromAddress;
-
-
-
-
-                    //foreach (PropertyInfo propInfo in env.GetType().GetProperties())
-                    //    textBox_4_Tests_Only.Text += Environment.NewLine + propInfo.GetValue(env, null);
                 }
             }
             else
             {
-                textBox_4_Tests_Only.Text += Environment.NewLine + "===================================" +
+                textBox_4_Tests_Only.Text += Environment.NewLine + "====================================" +
                     Environment.NewLine + Environment.NewLine + "No New Envelopes For Selected Date.";
             }
         }
+
 
         private void btnCheckDB_Click(object sender, RoutedEventArgs e)
         {
@@ -193,13 +202,48 @@ namespace NBU_Mailer_2016
             string dbfFileForUpload = "SPRUSNBU.DBF";
             string dbfFileDirectory = "D:\\_SPRUSNBU";
 
-            // TODO:  W A R N I N G  SPECIAL FOR SPRUSNBU ONLY !!!!!!
-            // TODO:  W A R N I N G  SPECIAL FOR SPRUSNBU ONLY !!!!!!
-            // TODO:  W A R N I N G  SPECIAL FOR SPRUSNBU ONLY !!!!!!
-            string rez = workWithBD.CreateSprusnbuTable(SQL_DATABASE, currentWorkTable, "TEST!!!", "TEST!!!", 
-                dbfFileDirectory, dbfFileForUpload);
+            string login = textBoxForSqlLogin.Text.Trim();
+            string passw = textBoxForSqlPassword.Text.Trim();
 
-            MessageBox.Show(rez);
+            // TODO:  W A R N I N G  SPECIAL FOR SPRUSNBU ONLY !!!!!!
+            // TODO:  W A R N I N G  SPECIAL FOR SPRUSNBU ONLY !!!!!!
+            // TODO:  W A R N I N G  SPECIAL FOR SPRUSNBU ONLY !!!!!!
+            if (login.Length < 1 || passw.Length < 1)
+            {
+                MessageBox.Show("Set Login & Password Before!");
+            }
+            else
+            {
+                string rez = workWithBD.CreateSprusnbuTable(SQL_DATABASE, currentWorkTable, login, passw,
+                dbfFileDirectory, dbfFileForUpload);
+                MessageBox.Show(rez);
+            }
+        }
+
+
+        // SELECT START FOLDER PATH :
+        private void btnSelectStartDir_Click(object sender, RoutedEventArgs e)
+        {
+            string methodName = MethodInfo.GetCurrentMethod().Name;
+            try
+            {
+                var foldBrowsDlg = new System.Windows.Forms.FolderBrowserDialog();
+
+                System.Windows.Forms.DialogResult FBDResult = foldBrowsDlg.ShowDialog(this.GetIWin32Window());
+
+                if (FBDResult == System.Windows.Forms.DialogResult.OK)
+                {
+                    string path = foldBrowsDlg.SelectedPath;
+                    File.WriteAllText(settsFile, path);
+                    NbuRootDir = path;
+                    textBoxForStartDir.Text = path;
+                }
+            }
+            catch (Exception exc)
+            {
+                nLogger.Error(methodName + "() - " + exc.Message);
+            }
+
         }
 
 

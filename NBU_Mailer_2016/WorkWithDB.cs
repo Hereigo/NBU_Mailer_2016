@@ -69,7 +69,7 @@ namespace NBU_Mailer_2016
 
             string connectString = "Data Source=MAIN;uid=" + userName + ";password=" + passw + ";database=" + databaseName;
 
-            string rezultMsg = "DataBase NOT Exists!";
+            string rezultMsg = "DataBase is Unreachable or Login Failed!";
 
             if (DbIsExists(databaseName, userName, passw))
             {
@@ -108,7 +108,7 @@ namespace NBU_Mailer_2016
                 //  IF TABLE NOT EXISTS - TRYING TO CREATE :
                 if (tabelIsExists)
                 {
-                    rezultMsg = "OK - Table Is Already Exists.";
+                    rezultMsg = "OK - Table " + tableName + " Is Already Exists.";
                 }
                 else
                 {
@@ -166,7 +166,7 @@ namespace NBU_Mailer_2016
                             {
                                 sqlcmd.ExecuteNonQuery();
                             }
-                            
+
                         }
 
                         rezultMsg = "Table - " + tableName + " is Created Successfully.";
