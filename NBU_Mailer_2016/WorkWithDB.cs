@@ -63,6 +63,9 @@ namespace NBU_Mailer_2016
         }
 
 
+        //private void CreateTableInDB(string db, string table, )
+
+
         public string CreateSprusnbuTable(string databaseName, string tableName, string userName, string passw, string fileDbfFolder, string fileDbf)
         {
             bool tabelIsExists = false;
@@ -236,5 +239,7 @@ namespace NBU_Mailer_2016
                 sqlConn.Close();
             }
         }
+
+
     }
 }

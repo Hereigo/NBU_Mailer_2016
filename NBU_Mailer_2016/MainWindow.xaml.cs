@@ -16,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace NBU_Mailer_2016
 {
@@ -30,13 +31,13 @@ namespace NBU_Mailer_2016
 
         public static Logger nLogger = LogManager.GetCurrentClassLogger();
 
-        const string settsFile = "NBU_Mailer_2016.txt";
+        const string settsFile = "NBU_Mailer_2016.ini";
 
         const string SQL_DATABASE = "Andrew2";
 
         static string NbuRootDir;
 
-        static string envelTodayDirName = "ARH\\";
+        static string envelTodayDirName = "\\ARH\\";
 
         static string envelTodayShortPath;
 
@@ -47,11 +48,67 @@ namespace NBU_Mailer_2016
 
             InitializeStartParams();
 
-            // TODO: Inject TIMER !
-            // TODO: Inject TIMER !
-            // TODO: Inject TIMER !
+            DispatcherTimer dispTimer = new DispatcherTimer();
+            dispTimer.Interval = new TimeSpan(0, 15, 0); // 15 minutes
+            dispTimer.Tick += RunEveryFifteenMin;
+            dispTimer.Start();
 
-            RunEveryTenMinutes();
+            labelForTimer.Content = "Next Autorun at " + DateTime.Now.AddMinutes(15).ToShortTimeString();
+        }
+
+
+
+        private void RunEveryFifteenMin(object sender, EventArgs e)
+        {
+            ProcessEnvelopes();
+        }
+
+
+        // UNPACK ENVELOPES AND SHOW ALL PARAMS :
+        private void ProcessEnvelopes()
+        {
+            labelForTimer.Content = "Next Autorun at - " + DateTime.Now.AddMinutes(15).ToShortTimeString();
+
+            textBox_4_Tests_Only.Text = "TODAY ENVELOPES:";
+
+            FileInfo[] todayEnvelopes = GetEnvelopesListForDate(dataPicker.SelectedDate.Value);
+
+            if (todayEnvelopes != null && todayEnvelopes.Length > 0)
+            {
+                for (int i = 0; i < todayEnvelopes.Length; i++)
+                {
+                    //  CREATE ENVELOPES FROM EVERY ENVELOPE-FILE :
+                    Envelope env = new Envelope(todayEnvelopes[i]);
+
+                    // UPLOAD INTO DB
+
+
+                    // WRITE IN LOF IF OK.
+
+
+                    // DEBUGGING OUTPUT TO TEXTBOX !!!
+                    // DEBUGGING OUTPUT TO TEXTBOX !!!
+                    // DEBUGGING OUTPUT TO TEXTBOX !!!
+                    textBox_4_Tests_Only.Text += Environment.NewLine + "====================================";
+                    //foreach (PropertyInfo propInfo in env.GetType().GetProperties())
+                    //    textBox_4_Tests_Only.Text += Environment.NewLine + propInfo.GetValue(env, null);
+                    textBox_4_Tests_Only.Text += Environment.NewLine + "en.envelopeName - " + env.envelopeName;
+                    textBox_4_Tests_Only.Text += Environment.NewLine + "en.envelopePath - " + env.envelopePath;
+                    textBox_4_Tests_Only.Text += Environment.NewLine + "e.fileDelivered - " + env.fileDelivered;
+                    textBox_4_Tests_Only.Text += Environment.NewLine + "en.fileLocation - " + env.fileLocation;
+                    textBox_4_Tests_Only.Text += Environment.NewLine + "e..fileModified - " + env.fileModified;
+                    textBox_4_Tests_Only.Text += Environment.NewLine + "env....fileName - " + env.fileName;
+                    textBox_4_Tests_Only.Text += Environment.NewLine + "env....fileSent - " + env.fileSent;
+                    textBox_4_Tests_Only.Text += Environment.NewLine + "env....fileSize - " + env.fileSize;
+                    textBox_4_Tests_Only.Text += Environment.NewLine + "recieve_Address - " + env.recieveAddress;
+                    textBox_4_Tests_Only.Text += Environment.NewLine + "sendFromAddress - " + env.sendFromAddress;
+                }
+            }
+            else
+            {
+                textBox_4_Tests_Only.Text += Environment.NewLine + "====================================" +
+                    Environment.NewLine + Environment.NewLine + "No New Envelopes For Selected Date.";
+            }
         }
 
 
@@ -70,6 +127,8 @@ namespace NBU_Mailer_2016
 
 
         // SET: START DIR, SQL DB, etc...
+
+
         private void InitializeStartParams()
         {
             // TODO: CREATE BD - IF NOT EXISTS !!!
@@ -141,59 +200,14 @@ namespace NBU_Mailer_2016
         }
 
 
-        // RUN QUERY OF ALL SHEDULLED TASKS :
-        private void RunEveryTenMinutes()
-        {
-
-        }
-
-
         // UNPACK ENVELOPES AND SHOW ALL PARAMS :
         private void btnShowSelectedDateEnv_Click(object sender, RoutedEventArgs e)
         {
-            textBox_4_Tests_Only.Text = "TODAY ENVELOPES:";
-
-            FileInfo[] todayEnvelopes = GetEnvelopesListForDate(dataPicker.SelectedDate.Value);
-
-            if (todayEnvelopes != null && todayEnvelopes.Length > 0)
-            {
-                for (int i = 0; i < todayEnvelopes.Length; i++)
-                {
-                    //  CREATE ENVELOPES FROM EVERY ENVELOPE-FILE :
-                    Envelope env = new Envelope(todayEnvelopes[i]);
-
-                    // UPLOAD INTO DB
-
-
-                    // WRITE IN LOF IF OK.
-
-
-                    // DEBUGGING OUTPUT TO TEXTBOX !!!
-                    // DEBUGGING OUTPUT TO TEXTBOX !!!
-                    // DEBUGGING OUTPUT TO TEXTBOX !!!
-                    textBox_4_Tests_Only.Text += Environment.NewLine + "====================================";
-                    //foreach (PropertyInfo propInfo in env.GetType().GetProperties())
-                    //    textBox_4_Tests_Only.Text += Environment.NewLine + propInfo.GetValue(env, null);
-                    textBox_4_Tests_Only.Text += Environment.NewLine + "en.envelopeName - " + env.envelopeName;
-                    textBox_4_Tests_Only.Text += Environment.NewLine + "en.envelopePath - " + env.envelopePath;
-                    textBox_4_Tests_Only.Text += Environment.NewLine + "e.fileDelivered - " + env.fileDelivered;
-                    textBox_4_Tests_Only.Text += Environment.NewLine + "en.fileLocation - " + env.fileLocation;
-                    textBox_4_Tests_Only.Text += Environment.NewLine + "e..fileModified - " + env.fileModified;
-                    textBox_4_Tests_Only.Text += Environment.NewLine + "env....fileName - " + env.fileName;
-                    textBox_4_Tests_Only.Text += Environment.NewLine + "env....fileSent - " + env.fileSent;
-                    textBox_4_Tests_Only.Text += Environment.NewLine + "env....fileSize - " + env.fileSize;
-                    textBox_4_Tests_Only.Text += Environment.NewLine + "recieve_Address - " + env.recieveAddress;
-                    textBox_4_Tests_Only.Text += Environment.NewLine + "sendFromAddress - " + env.sendFromAddress;
-                }
-            }
-            else
-            {
-                textBox_4_Tests_Only.Text += Environment.NewLine + "====================================" +
-                    Environment.NewLine + Environment.NewLine + "No New Envelopes For Selected Date.";
-            }
+            ProcessEnvelopes();
         }
 
 
+        // IF TABLE "SPRUSNBU" NOT EXIST - CREATE & FILL FROM DBF:
         private void btnCheckDB_Click(object sender, RoutedEventArgs e)
         {
             WorkWithDB workWithBD = new WorkWithDB();
