@@ -27,13 +27,35 @@ namespace NBU_Mailer_2016
     {
         // SET ALL PATHES HERE :
 
-        // TODO: STATIC CLASS FOR STATIC FIELDS FOR SETTINGS
+        // TODO: WARNING !!!
+        // TODO: WARNING !!!
+        // TODO: WARNING !!!
+
+        const string _DATABASE = "Andrew2";
+
+        // TODO: WARNING !!!
+        // TODO: WARNING !!!
+        // TODO: WARNING !!!
+
 
         public static Logger nLogger = LogManager.GetCurrentClassLogger();
 
+        // - USEFUL CODE-SNIPPET :)  !!!!!!!!!!!!!!!
+        // - USEFUL CODE-SNIPPET :)  !!!!!!!!!!!!!!!
+        //
+        // using NLog;
+        // using System.Reflection;
+        // public static Logger nLogger = LogManager.GetCurrentClassLogger();
+        //
+        // string methodName = MethodInfo.GetCurrentMethod().Name;
+        // try{ }
+        // catch (Exception exc) { 
+        //     nLogger.Error(methodName + "() - " + exc.Message);
+        // }
+
         const string settsFile = "NBU_Mailer_2016.ini";
 
-        const string SQL_DATABASE = "Andrew2";
+        
 
         static string NbuRootDir;
 
@@ -42,6 +64,7 @@ namespace NBU_Mailer_2016
         static string envelTodayShortPath;
 
 
+        // RUN ALL INITIALIZERS & START TIMER :
         public MainWindow()
         {
             InitializeComponent();
@@ -57,7 +80,7 @@ namespace NBU_Mailer_2016
         }
 
 
-
+        // RUN TASKS USING SHCHEDULER :
         private void RunEveryFifteenMin(object sender, EventArgs e)
         {
             ProcessEnvelopes();
@@ -112,40 +135,19 @@ namespace NBU_Mailer_2016
         }
 
 
-        // - USEFUL CODE-SNIPPET :)  !!!!!!!!!!!!!!!
-        // - USEFUL CODE-SNIPPET :)  !!!!!!!!!!!!!!!
-        //
-        // using NLog;
-        // using System.Reflection;
-        // public static Logger nLogger = LogManager.GetCurrentClassLogger();
-        //
-        // string methodName = MethodInfo.GetCurrentMethod().Name;
-        // try{ }
-        // catch (Exception exc) { 
-        //     nLogger.Error(methodName + "() - " + exc.Message);
-        // }
-
-
-        // SET: START DIR, SQL DB, etc...
-
-
+        // SETTS-FILE WITH STRT DIR :
         private void InitializeStartParams()
         {
-            // TODO: CREATE BD - IF NOT EXISTS !!!
-            // TODO: CREATE BD - IF NOT EXISTS !!!
-            // TODO: CREATE BD - IF NOT EXISTS !!!
-
             string methodName = MethodInfo.GetCurrentMethod().Name;
             try
             {
+                // TODO: CHECK BD - CREATE IF NOT EXISTS !!!
+                // TODO: CHECK BD - CREATE IF NOT EXISTS !!!
+                // TODO: CHECK BD - CREATE IF NOT EXISTS !!!
+
                 if (!File.Exists(settsFile))
                 {
-                    //File.Create(settsFile);
                     MessageBox.Show("Start Folder Is Not Set! Set It Before Use!");
-                    // TODO: REFACTORE IT USING FOLDER-OPEN-DIALOG !!!
-                    // TODO: REFACTORE IT USING FOLDER-OPEN-DIALOG !!!
-                    // Process.Start(settsFile);
-                    // Application.Current.Shutdown();
                 }
                 else
                 {
@@ -155,16 +157,11 @@ namespace NBU_Mailer_2016
                     {
                         NbuRootDir = readedString;
                         textBoxForStartDir.Text = NbuRootDir;
-                        MessageBox.Show("Start Folder  ==  " + NbuRootDir);
+                        MessageBox.Show("Start Folder Set As - " + NbuRootDir);
                     }
                     else
                     {
                         MessageBox.Show("Start Folder Is Not Set! Set It Before Use!");
-                        // TODO: REFACTORE IT USING FOLDER-OPEN-DIALOG !!!
-                        // TODO: REFACTORE IT USING FOLDER-OPEN-DIALOG !!!
-                        // TODO: REFACTORE IT USING FOLDER-OPEN-DIALOG !!!
-                        // Process.Start(settsFile);
-                        // Application.Current.Shutdown();
                     }
                 }
             }
@@ -210,8 +207,6 @@ namespace NBU_Mailer_2016
         // IF TABLE "SPRUSNBU" NOT EXIST - CREATE & FILL FROM DBF:
         private void btnCheckDB_Click(object sender, RoutedEventArgs e)
         {
-            WorkWithDB workWithBD = new WorkWithDB();
-
             string currentWorkTable = "SPRUSNBU";
             string dbfFileForUpload = "SPRUSNBU.DBF";
             string dbfFileDirectory = "D:\\_SPRUSNBU";
@@ -219,18 +214,20 @@ namespace NBU_Mailer_2016
             string login = textBoxForSqlLogin.Text.Trim();
             string passw = textBoxForSqlPassword.Text.Trim();
 
-            // TODO:  W A R N I N G  SPECIAL FOR SPRUSNBU ONLY !!!!!!
-            // TODO:  W A R N I N G  SPECIAL FOR SPRUSNBU ONLY !!!!!!
-            // TODO:  W A R N I N G  SPECIAL FOR SPRUSNBU ONLY !!!!!!
             if (login.Length < 1 || passw.Length < 1)
             {
                 MessageBox.Show("Set Login & Password Before!");
             }
             else
             {
-                string rez = workWithBD.CreateSprusnbuTable(SQL_DATABASE, currentWorkTable, login, passw,
-                dbfFileDirectory, dbfFileForUpload);
-                MessageBox.Show(rez);
+                WorkWithDB workWithBD = new WorkWithDB(_DATABASE, login, passw);
+
+
+                MessageBox.Show( workWithBD.CreateTableInDB() );
+
+                //string rez = workWithBD.CreateSprusnbuTable(currentWorkTable, login, passw,
+                //dbfFileDirectory, dbfFileForUpload);
+                //MessageBox.Show(rez);
             }
         }
 
