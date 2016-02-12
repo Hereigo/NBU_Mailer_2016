@@ -9,13 +9,14 @@
         Title="NBU-Mail Uploader (Plakhtiy A.Net Development © 2016)" Height="350" Width="579.802" Icon="Envelope.ico">
     <Grid>
         <TextBox x:Name="textBox_4_Tests_Only" Margin="10,38,10,40" TextWrapping="Wrap" Text="TODAY ENVELOPES:" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto" FontFamily="Consolas"/>
-        <Button x:Name="btnShowSelectedDateEnv" Content="Show Envelopes For Date" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="120, 0, 0, 10" Width="149" Height="25" RenderTransformOrigin="0.822,0.448" Click="btnShowSelectedDateEnv_Click"/>
-        <DatePicker x:Name="dataPicker" HorizontalAlignment="Left" Margin="10,0,0,10" VerticalAlignment="Bottom" SelectedDate="{x:Static sys:DateTime.Now}" Width="105"/>
-        <Button x:Name="btnCheckDB" Content="Create Sprusnbu Table" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,10,10" Width="131" Height="25" RenderTransformOrigin="0.822,0.448" Click="btnCheckDB_Click"/>
+        <Button x:Name="btnShowSelectedDateEnv" Content="Show For Date" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,10" Width="93" Height="25" RenderTransformOrigin="0.822,0.448" Click="btnShowSelectedDateEnv_Click"/>
+        <DatePicker x:Name="dataPicker" HorizontalAlignment="Left" Margin="108,0,0,10" VerticalAlignment="Bottom" SelectedDate="{x:Static sys:DateTime.Now}" Width="105"/>
+        <Button x:Name="btnCheckDB" Content="Create Table" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,127,10" Width="73" Height="25" RenderTransformOrigin="0.822,0.448" Click="btnCheckDB_Click"/>
         <TextBox x:Name="textBoxForStartDir" HorizontalAlignment="Stretch" Height="23" Margin="10,10,273,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" ToolTip="Press Button To Set Start Folder." UndoLimit="5" IsReadOnly="True"/>
         <Button x:Name="btnSelectStartDir" Content="Select Start Dir" HorizontalAlignment="Right" Margin="0,10,175,0" VerticalAlignment="Top" Width="93" Height="23" Click="btnSelectStartDir_Click"/>
         <TextBox x:Name="textBoxForSqlLogin" HorizontalAlignment="Right" Height="23" Margin="0,10,101,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="69" UndoLimit="5" ToolTip="Login For SQL" IsHitTestVisible="True" RenderTransformOrigin="-0.302,0.299"/>
         <TextBox x:Name="textBoxForSqlPassword" HorizontalAlignment="Right" Height="23" Margin="0,10,10,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="86" UndoLimit="5" ToolTip="Login For SQL" IsHitTestVisible="True" RenderTransformOrigin="-0.302,0.299"/>
-        <Label x:Name="labelForTimer" Content="Next Autorun at 23:58" HorizontalAlignment="Stretch" Margin="274,0,146,10" VerticalAlignment="Bottom" Width="152" Height="24" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+        <Label x:Name="labelForTimer" Content="Next Autorun at 23:58" HorizontalAlignment="Stretch" Margin="218,0,205,10" VerticalAlignment="Bottom" Height="24" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+        <Button x:Name="btnSprusnbuUpd" Content="DBF into Sprusnbu" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,10,10" Width="112" Height="25" RenderTransformOrigin="0.822,0.448" Click="btnSprusnbuUpd_Click" />
     </Grid>
 </Window>

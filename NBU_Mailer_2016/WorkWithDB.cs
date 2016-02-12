@@ -147,7 +147,6 @@ namespace NBU_Mailer_2016
             return tableIsExists;
         }
 
-
         // CREATING EMPTY TABLE :
         // public string CreateTableInDB(string tableName, string createCommand)
         public string CreateTableInDB()
@@ -170,20 +169,31 @@ namespace NBU_Mailer_2016
                 //}
                 //else
                 //{
+
                 using (SqlConnection sqlConnect = new SqlConnection(_CONNSTR))
+                {
+                    string creatingTablCmd = "USE " + _DATABASE +
+                        " CREATE TABLE [" + tableName + "] " + createCommand;
+
+                    sqlConnect.Open();
+
+                    using (SqlCommand sqlcmd = new SqlCommand(creatingTablCmd, sqlConnect))
                     {
-                        string creatingTablCmd = "USE " + _DATABASE +
-                            " CREATE TABLE [" + tableName + "] " + createCommand;
-
-                        sqlConnect.Open();
-
-                        using (SqlCommand sqlcmd = new SqlCommand(creatingTablCmd, sqlConnect))
-                        {
-                            sqlcmd.ExecuteNonQuery();
-                        }
+                        sqlcmd.ExecuteNonQuery();
                     }
-                    rezulMsg = tableName + " - Created Successfully.";
+                }
+                rezulMsg = tableName + " - Created Successfully.";
+
                 //}
+
+                // TODO: SPECIAL FOR SPRUSNBU ONLY !!!
+                // TODO: SPECIAL FOR SPRUSNBU ONLY !!!
+                // TODO: SPECIAL FOR SPRUSNBU ONLY !!!
+                // TODO: SPECIAL FOR SPRUSNBU ONLY !!!
+
+                //FillSprusnbuFromDbf("SPRUSNBU", "D:\\_SPRUSNBU", "SPRUSNBU.DBF");
+
+                //UpdateCharsInSprusnbu("SPRUSNBU");
             }
             catch (Exception exc)
             {
@@ -193,7 +203,7 @@ namespace NBU_Mailer_2016
 
             try
             {
-                FillSprusnbuFromDbf("SPRUSNBU", "D:\\_SPRUSNBU", "SPRUSNBU.DBF");
+
             }
             catch (Exception exc)
             {
@@ -205,8 +215,12 @@ namespace NBU_Mailer_2016
         }
 
 
-        private void FillSprusnbuFromDbf(string tableForUpdate, string fileDbfFolder, string fileDbf)
+        public string FillSprusnbuFromDbf(string tableForUpdate, string fileDbfFolder, string fileDbf)
         {
+            string rez = "Start Rebuilding...";
+
+            string methodName = MethodInfo.GetCurrentMethod().Name;
+
             string oleConnectionStr = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" +
                 fileDbfFolder + ";Extended Properties=dBASE IV";
 
@@ -238,30 +252,56 @@ namespace NBU_Mailer_2016
                 // TODO: SPECIAL FOR MY FIELDS TO DIVIDE BETWEEN DATES
                 // SQL : INSERT INTO SPRUSNBU$ (IDHOST) VALUES ('U000')
 
-                // FIXING UKR. DOS-CHARACTERS :
-
-                //      if (ch == '°') text2 += 'Ї';
-                // else if (ch == 'Ў') text2 += 'І';
-                // else if (ch == 'ў') text2 += 'і';
-                string charsFixCmd = "UPDATE " + tableForUpdate + " SET FNHOST = REPLACE(FNHOST, '°', 'Ї')" +
-                    "UPDATE " + tableForUpdate + " SET FNHOST = REPLACE(FNHOST, 'Ў', 'І')" +
-                    "UPDATE " + tableForUpdate + " SET KFASE = REPLACE(KFASE, '°', 'Ї')" +
-                    "UPDATE " + tableForUpdate + " SET KFASE = REPLACE(KFASE, 'Ў', 'І')";
-
-                using (SqlCommand sqlcmd = new SqlCommand(charsFixCmd))
-                {
-                    sqlcmd.ExecuteNonQuery();
-                }
+                rez = "DBF Uploaded.";
             }
-            catch (Exception excep)
+            catch (Exception exc)
             {
-                Console.WriteLine(excep.ToString());
+                rez = "ERR! - " + exc.Message;
+                nLogger.Error(methodName + "() - " + exc.Message);
             }
             finally
             {
                 oleConn.Close();
                 sqlConn.Close();
             }
+            return rez;
+        }
+
+
+
+        // FIXING UKR. DOS-CHARACTERS :
+        public string UpdateCharsInSprusnbu(string tableForUpdate)
+        {
+            string rez = "Start Chars Updating...";
+
+            //      if (ch == '°') text2 += 'Ї';
+            // else if (ch == 'Ў') text2 += 'І';
+            // else if (ch == 'ў') text2 += 'і';
+            string charsFixCmd = "UPDATE " + tableForUpdate + " SET FNHOST = REPLACE(FNHOST, '°', 'Ї')" +
+                "UPDATE " + tableForUpdate + " SET FNHOST = REPLACE(FNHOST, 'Ў', 'І')" +
+                "UPDATE " + tableForUpdate + " SET KFASE = REPLACE(KFASE, '°', 'Ї')" +
+                "UPDATE " + tableForUpdate + " SET KFASE = REPLACE(KFASE, 'Ў', 'І')";
+
+            string methodName = MethodInfo.GetCurrentMethod().Name;
+            try
+            {
+                using (SqlConnection sqlConnect = new SqlConnection(_CONNSTR))
+                {
+                    sqlConnect.Open();
+
+                    using (SqlCommand sqlcmd = new SqlCommand(charsFixCmd, sqlConnect))
+                    {
+                        sqlcmd.ExecuteNonQuery();
+                    }
+                }
+                rez = "Characters Replaced.";
+            }
+            catch (Exception exc)
+            {
+                rez = "ERR! - " + exc.Message;
+                nLogger.Error(methodName + "() - " + exc.Message);
+            }
+            return rez;
         }
 
     }

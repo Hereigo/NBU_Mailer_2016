@@ -33,12 +33,14 @@ namespace NBU_Mailer_2016
 
         const string _DATABASE = "Andrew2";
 
-        // TODO: WARNING !!!
-        // TODO: WARNING !!!
-        // TODO: WARNING !!!
+        const string _SPRUSNBU_TBL = "SPRUSNBU";
 
+        // TODO: WARNING !!!
+        // TODO: WARNING !!!
+        // TODO: WARNING !!!
 
         public static Logger nLogger = LogManager.GetCurrentClassLogger();
+
 
         // - USEFUL CODE-SNIPPET :)  !!!!!!!!!!!!!!!
         // - USEFUL CODE-SNIPPET :)  !!!!!!!!!!!!!!!
@@ -53,9 +55,8 @@ namespace NBU_Mailer_2016
         //     nLogger.Error(methodName + "() - " + exc.Message);
         // }
 
-        const string settsFile = "NBU_Mailer_2016.ini";
 
-        
+        const string settsFile = "NBU_Mailer_2016.ini";
 
         static string NbuRootDir;
 
@@ -71,12 +72,41 @@ namespace NBU_Mailer_2016
 
             InitializeStartParams();
 
+            textBox_4_Tests_Only.Text = Environment.NewLine + "Database = " + _DATABASE + " !!!" + 
+                Environment.NewLine + Environment.NewLine + "Table is = " + _SPRUSNBU_TBL + " !!!";
+
             DispatcherTimer dispTimer = new DispatcherTimer();
             dispTimer.Interval = new TimeSpan(0, 15, 0); // 15 minutes
             dispTimer.Tick += RunEveryFifteenMin;
             dispTimer.Start();
 
             labelForTimer.Content = "Next Autorun at " + DateTime.Now.AddMinutes(15).ToShortTimeString();
+        }
+
+
+        // SELECT START FOLDER PATH :
+        private void btnSelectStartDir_Click(object sender, RoutedEventArgs e)
+        {
+            string methodName = MethodInfo.GetCurrentMethod().Name;
+            try
+            {
+                var foldBrowsDlg = new System.Windows.Forms.FolderBrowserDialog();
+
+                System.Windows.Forms.DialogResult FBDResult = foldBrowsDlg.ShowDialog(this.GetIWin32Window());
+
+                if (FBDResult == System.Windows.Forms.DialogResult.OK)
+                {
+                    string path = foldBrowsDlg.SelectedPath;
+                    File.WriteAllText(settsFile, path);
+                    NbuRootDir = path;
+                    textBoxForStartDir.Text = path;
+                }
+            }
+            catch (Exception exc)
+            {
+                nLogger.Error(methodName + "() - " + exc.Message);
+            }
+
         }
 
 
@@ -204,13 +234,9 @@ namespace NBU_Mailer_2016
         }
 
 
-        // IF TABLE "SPRUSNBU" NOT EXIST - CREATE & FILL FROM DBF:
+        // IF TABLE NOT EXIST - CREATE IT:
         private void btnCheckDB_Click(object sender, RoutedEventArgs e)
         {
-            string currentWorkTable = "SPRUSNBU";
-            string dbfFileForUpload = "SPRUSNBU.DBF";
-            string dbfFileDirectory = "D:\\_SPRUSNBU";
-
             string login = textBoxForSqlLogin.Text.Trim();
             string passw = textBoxForSqlPassword.Text.Trim();
 
@@ -222,39 +248,41 @@ namespace NBU_Mailer_2016
             {
                 WorkWithDB workWithBD = new WorkWithDB(_DATABASE, login, passw);
 
-
-                MessageBox.Show( workWithBD.CreateTableInDB() );
-
-                //string rez = workWithBD.CreateSprusnbuTable(currentWorkTable, login, passw,
-                //dbfFileDirectory, dbfFileForUpload);
-                //MessageBox.Show(rez);
+                MessageBox.Show(workWithBD.CreateTableInDB());
             }
         }
 
 
-        // SELECT START FOLDER PATH :
-        private void btnSelectStartDir_Click(object sender, RoutedEventArgs e)
+        // "SPRUSNBU" FROM DBF:
+        private void btnSprusnbuUpd_Click(object sender, RoutedEventArgs e)
         {
-            string methodName = MethodInfo.GetCurrentMethod().Name;
-            try
+            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+            dlg.DefaultExt = ".dbf";
+            dlg.Filter = "DBF Files Only (*.dbf)|*.dbf";
+
+            bool? dbfFileSelected = dlg.ShowDialog();
+
+            if (dbfFileSelected == true)
             {
-                var foldBrowsDlg = new System.Windows.Forms.FolderBrowserDialog();
+                FileInfo dbfFile = new FileInfo(dlg.FileName);
 
-                System.Windows.Forms.DialogResult FBDResult = foldBrowsDlg.ShowDialog(this.GetIWin32Window());
+                string login = textBoxForSqlLogin.Text.Trim();
+                string passw = textBoxForSqlPassword.Text.Trim();
 
-                if (FBDResult == System.Windows.Forms.DialogResult.OK)
+                if (login.Length < 1 || passw.Length < 1)
                 {
-                    string path = foldBrowsDlg.SelectedPath;
-                    File.WriteAllText(settsFile, path);
-                    NbuRootDir = path;
-                    textBoxForStartDir.Text = path;
+                    MessageBox.Show("Set Login & Password Before!");
+                }
+                else
+                {
+                    WorkWithDB workWithBD = new WorkWithDB(_DATABASE, login, passw);
+
+                    MessageBox.Show(workWithBD.FillSprusnbuFromDbf(_SPRUSNBU_TBL,
+                        dbfFile.Directory.ToString(), dbfFile.Name));
+
+                    MessageBox.Show(workWithBD.UpdateCharsInSprusnbu(_SPRUSNBU_TBL));
                 }
             }
-            catch (Exception exc)
-            {
-                nLogger.Error(methodName + "() - " + exc.Message);
-            }
-
         }
 
 
