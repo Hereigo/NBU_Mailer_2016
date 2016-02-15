@@ -31,9 +31,9 @@ namespace NBU_Mailer_2016
         // TODO: WARNING !!!
         // TODO: WARNING !!!
 
-        const string _DATABASE = "Andrew2";
+        const string _DATABASE = "Andrew";
 
-        const string _SPRUSNBU_TBL = "SPRUSNBU";
+        const string _SPRUSNBU_TBL = "SPRUSNBU$";
 
         // TODO: WARNING !!!
         // TODO: WARNING !!!
@@ -51,8 +51,8 @@ namespace NBU_Mailer_2016
         //
         // string methodName = MethodInfo.GetCurrentMethod().Name;
         // try{ }
-        // catch (Exception exc) { 
-        //     nLogger.Error(methodName + "() - " + exc.Message);
+        // catch (Exception e) { 
+        //     nLogger.Error("{0}() - {1}", methodName, e.Message);
         // }
 
 
@@ -234,25 +234,6 @@ namespace NBU_Mailer_2016
         }
 
 
-        // IF TABLE NOT EXIST - CREATE IT:
-        private void btnCheckDB_Click(object sender, RoutedEventArgs e)
-        {
-            string login = textBoxForSqlLogin.Text.Trim();
-            string passw = textBoxForSqlPassword.Text.Trim();
-
-            if (login.Length < 1 || passw.Length < 1)
-            {
-                MessageBox.Show("Set Login & Password Before!");
-            }
-            else
-            {
-                WorkWithDB workWithBD = new WorkWithDB(_DATABASE, login, passw);
-
-                MessageBox.Show(workWithBD.CreateTableInDB());
-            }
-        }
-
-
         // "SPRUSNBU" FROM DBF:
         private void btnSprusnbuUpd_Click(object sender, RoutedEventArgs e)
         {
@@ -277,13 +258,12 @@ namespace NBU_Mailer_2016
                 {
                     WorkWithDB workWithBD = new WorkWithDB(_DATABASE, login, passw);
 
-                    MessageBox.Show(workWithBD.FillSprusnbuFromDbf(_SPRUSNBU_TBL,
+                    MessageBox.Show(workWithBD.UpdateSprusnbuFromDbf(_SPRUSNBU_TBL,
                         dbfFile.Directory.ToString(), dbfFile.Name));
-
-                    MessageBox.Show(workWithBD.UpdateCharsInSprusnbu(_SPRUSNBU_TBL));
                 }
             }
         }
+
 
 
         // TODO: CHECK LOG IF ENVEL NOT LOADED YET !!!
@@ -297,16 +277,6 @@ namespace NBU_Mailer_2016
         // 3. IF EARLIER THAN 23:00
 
         //      - 
-
-        //      - 
-
-        //      - 
-
-        //      - 
-
-
-
-
 
     }
 }

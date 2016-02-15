@@ -56,6 +56,21 @@ namespace NBU_Mailer_2016
             " [UID] uniqueidentifier NOT NULL DEFAULT (newid())" +
             " ) ON [PRIMARY];";
 
+        private const string envelopeDescr =
+            "(" +
+            " [FROM] nvarchar(15)," +
+            " [TO] nvarchar(15)," +
+            " [FILE] nvarchar(15)," +
+            " [FILE_SIZE] int," +
+            " [FILE_DATE] datetime," +
+            " [DATE_SENT] datetime," +
+            " [DATE_DELIV] datetime," +
+            " [FILE_PATH] nvarchar(255)," +
+            " [ENV_PATH] nvarchar(255)," +
+            " [ENV_NAME] nvarchar(15)," +
+            " [UID] uniqueidentifier NOT NULL DEFAULT (newid())" +
+            " ) ON [PRIMARY];";
+
         #endregion
 
 
@@ -91,9 +106,9 @@ namespace NBU_Mailer_2016
                     }
                 }
             }
-            catch (Exception exc)
+            catch (Exception e)
             {
-                nLogger.Error(methodName + "() - " + exc.Message);
+                nLogger.Error("{0}() - {1}", methodName, e.Message);
                 bdExists = false;
             }
 
@@ -147,11 +162,10 @@ namespace NBU_Mailer_2016
             return tableIsExists;
         }
 
-        // CREATING EMPTY TABLE :
-        // public string CreateTableInDB(string tableName, string createCommand)
-        public string CreateTableInDB()
+
+        // CREATING EMPTY TABLE (NOT USED TEMPORARY !!!) :
+        private string CreateTableInDB(string tableName)
         {
-            string tableName = "SPRUSNBU";
             string createCommand = sprunbuDescr;
 
             string rezulMsg = "Attempt To Create Table " + tableName + " Starting...";
@@ -185,102 +199,97 @@ namespace NBU_Mailer_2016
                 rezulMsg = tableName + " - Created Successfully.";
 
                 //}
-
-                // TODO: SPECIAL FOR SPRUSNBU ONLY !!!
-                // TODO: SPECIAL FOR SPRUSNBU ONLY !!!
-                // TODO: SPECIAL FOR SPRUSNBU ONLY !!!
-                // TODO: SPECIAL FOR SPRUSNBU ONLY !!!
-
-                //FillSprusnbuFromDbf("SPRUSNBU", "D:\\_SPRUSNBU", "SPRUSNBU.DBF");
-
-                //UpdateCharsInSprusnbu("SPRUSNBU");
             }
-            catch (Exception exc)
+            catch (Exception e)
             {
-                rezulMsg = "WARNING! - " + exc.Message;
-                nLogger.Error(methodName + "() - " + exc.Message);
-            }
-
-            try
-            {
-
-            }
-            catch (Exception exc)
-            {
-                rezulMsg = "DBF ERROR! - " + exc.Message;
-                nLogger.Error(methodName + "() - " + exc.Message);
+                rezulMsg = "WARNING! - " + e.Message;
+                nLogger.Error("{0}() - {1}", methodName, e.Message);
             }
 
             return rezulMsg;
         }
 
 
-        public string FillSprusnbuFromDbf(string tableForUpdate, string fileDbfFolder, string fileDbf)
+        // UPLOAD DBF INTO DB AND FIX CHARACTERS :
+        public string UpdateSprusnbuFromDbf(string tableForUpdate, string fileDbfFolder, string fileDbf)
         {
-            string rez = "Start Rebuilding...";
-
             string methodName = MethodInfo.GetCurrentMethod().Name;
 
-            string oleConnectionStr = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" +
-                fileDbfFolder + ";Extended Properties=dBASE IV";
+            string rez = "Starting Check DB & Tables...";
 
-            OleDbConnection oleConn = new OleDbConnection(oleConnectionStr);
-            SqlConnection sqlConn = new SqlConnection(_CONNSTR);
-            DataTable dTabl = new DataTable();
-
-            try
+            if (!TableIsExists(tableForUpdate))
             {
-                oleConn.Open();
-                sqlConn.Open();
-
-                // CLEAR SPRUSNBU TABLE BEFORE FILLING IT !!!
-
-                SqlCommand sqlCmd = sqlConn.CreateCommand();
-                sqlCmd.CommandText = "DELETE FROM " + tableForUpdate;
-                sqlCmd.ExecuteNonQuery();
-
-                SqlBulkCopy bulk = new SqlBulkCopy(sqlConn);
-                bulk.DestinationTableName = tableForUpdate;
-                bulk.BatchSize = 100000;
-
-                OleDbCommand oleCmd = oleConn.CreateCommand();
-                oleCmd.CommandText = "SELECT * FROM " + fileDbfFolder + "\\" + fileDbf + "\"";
-                dTabl.Load(oleCmd.ExecuteReader());
-
-                bulk.WriteToServer(dTabl);
-
-                // TODO: SPECIAL FOR MY FIELDS TO DIVIDE BETWEEN DATES
-                // SQL : INSERT INTO SPRUSNBU$ (IDHOST) VALUES ('U000')
-
-                rez = "DBF Uploaded.";
+                rez = "DB or TABLE not Exists OR Login Failed !";
             }
-            catch (Exception exc)
+            else
             {
-                rez = "ERR! - " + exc.Message;
-                nLogger.Error(methodName + "() - " + exc.Message);
+                rez = "Start Rebuilding...";
+
+                string oleConnectionStr = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" +
+                    fileDbfFolder + ";Extended Properties=dBASE IV";
+
+                OleDbConnection oleConn = new OleDbConnection(oleConnectionStr);
+                SqlConnection sqlConn = new SqlConnection(_CONNSTR);
+                DataTable dTabl = new DataTable();
+
+                try
+                {
+                    oleConn.Open();
+                    sqlConn.Open();
+
+                    // CLEAR SPRUSNBU TABLE BEFORE FILLING IT !!!
+
+                    SqlCommand sqlCmd = sqlConn.CreateCommand();
+                    sqlCmd.CommandText = "DELETE FROM " + tableForUpdate;
+                    sqlCmd.ExecuteNonQuery();
+
+                    SqlBulkCopy bulk = new SqlBulkCopy(sqlConn);
+                    bulk.DestinationTableName = tableForUpdate;
+                    bulk.BatchSize = 100000;
+
+                    OleDbCommand oleCmd = oleConn.CreateCommand();
+                    oleCmd.CommandText = "SELECT * FROM " + fileDbfFolder + "\\" + fileDbf + "\"";
+                    dTabl.Load(oleCmd.ExecuteReader());
+
+                    bulk.WriteToServer(dTabl);
+
+                    rez = "DBF Uploaded.";
+                }
+                catch (Exception exc)
+                {
+                    rez = "ERR! - " + exc.Message;
+                    nLogger.Error(methodName + "() - " + exc.Message);
+                }
+                finally
+                {
+                    oleConn.Close();
+                    sqlConn.Close();
+                }
+
+                rez = rez + " & " + FixDosCharsInSprusnbu(tableForUpdate); 
             }
-            finally
-            {
-                oleConn.Close();
-                sqlConn.Close();
-            }
+
             return rez;
         }
 
 
-
         // FIXING UKR. DOS-CHARACTERS :
-        public string UpdateCharsInSprusnbu(string tableForUpdate)
+        private string FixDosCharsInSprusnbu(string tableName)
         {
             string rez = "Start Chars Updating...";
 
             //      if (ch == '°') text2 += 'Ї';
             // else if (ch == 'Ў') text2 += 'І';
             // else if (ch == 'ў') text2 += 'і';
-            string charsFixCmd = "UPDATE " + tableForUpdate + " SET FNHOST = REPLACE(FNHOST, '°', 'Ї')" +
-                "UPDATE " + tableForUpdate + " SET FNHOST = REPLACE(FNHOST, 'Ў', 'І')" +
-                "UPDATE " + tableForUpdate + " SET KFASE = REPLACE(KFASE, '°', 'Ї')" +
-                "UPDATE " + tableForUpdate + " SET KFASE = REPLACE(KFASE, 'Ў', 'І')";
+            string charsFixCmd =
+                "UPDATE " + tableName + " SET FNHOST = REPLACE(FNHOST, '°', 'Ї')" +
+                "UPDATE " + tableName + " SET FNHOST = REPLACE(FNHOST, 'Ў', 'І')" +
+                "UPDATE " + tableName + " SET KFASE = REPLACE(KFASE, '°', 'Ї')" +
+                "UPDATE " + tableName + " SET KFASE = REPLACE(KFASE, 'Ў', 'І')" +
+                "INSERT INTO " + tableName + " (IDHOST)VALUES('U000')";
+            //   TEMPORARY: SPECIAL FOR MY FIELDS TO DIVIDE BETWEEN DATES
+            //   TEMPORARY: SPECIAL FOR MY FIELDS TO DIVIDE BETWEEN DATES
+            //   TEMPORARY: SPECIAL FOR MY FIELDS TO DIVIDE BETWEEN DATES
 
             string methodName = MethodInfo.GetCurrentMethod().Name;
             try

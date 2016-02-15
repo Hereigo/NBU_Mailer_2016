@@ -11,6 +11,16 @@ CREATE TABLE [ENVELOPES] (
 	[FILE_PATH] nvarchar(255),
 	[ENV_PATH] nvarchar(255),
 	[ENV_NAME] nvarchar(15),
-	[ENV_DATE] datetime,
 	[UID] uniqueidentifier NOT NULL DEFAULT (newid())
 ) ON [PRIMARY];
+
+--public string envelopePath { get; }
+--public string envelopeName { get; }
+--public string sendFromAddress { get; }
+--public string recieveAddress { get; }
+--public string fileName { get; }
+--public ulong fileSize { get; }
+--public DateTime fileModified { get; }
+--public DateTime fileSent { get; }
+--public DateTime fileDelivered { get; }
+--public string fileLocation { get; }
