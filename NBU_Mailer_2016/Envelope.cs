@@ -16,7 +16,9 @@ namespace NBU_Mailer_2016
         public DateTime fileModified { get; }
         public DateTime fileSent { get; }
         public DateTime fileDelivered { get; }
-        public string fileLocation { get; set; }
+
+        public string fileLocation { get; set; } 
+        
         // private string fileCategory;
 
         public Envelope(FileInfo envelope)
@@ -27,9 +29,7 @@ namespace NBU_Mailer_2016
             sendFromAddress = "";
             recieveAddress = "";
             fileName = "";
-
-            fileLocation = "!!!--U-N-D-E-F-I-N-E-D--!!!";
-
+            fileLocation = "";
             fileModified = DateTime.Parse("01.01.01 01:01:01");
             fileSent = DateTime.Parse("01.01.01 01:01:01");
             fileDelivered = DateTime.Parse("01.01.01 01:01:01");
