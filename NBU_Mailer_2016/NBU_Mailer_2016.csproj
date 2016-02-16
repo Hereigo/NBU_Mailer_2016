@@ -116,6 +116,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
+    <None Include="Folders_Structure_Temp.rtf" />
     <None Include="Git_Ignore_DEPLOY_.CMD" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>

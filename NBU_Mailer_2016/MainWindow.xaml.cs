@@ -64,6 +64,16 @@ namespace NBU_Mailer_2016
 
         static string envelTodayShortPath;
 
+        static string[] possibleOutputDirs = {
+            "\\USERD\\",
+            "\\USERD\\Admin\\",
+            "\\USERD\\Admin\\APPL\\",
+            "\\USERD\\Admin\\APPL_\\",
+            "\\USERD\\Admin\\unknown\\",
+            "\\USERD\\NBU\\APPL\\",
+            "\\USERD\\NBU\\unknown\\"
+        };
+
 
         // RUN ALL INITIALIZERS & START TIMER :
         public MainWindow()
@@ -132,6 +142,31 @@ namespace NBU_Mailer_2016
                 {
                     //  CREATE ENVELOPES FROM EVERY ENVELOPE-FILE :
                     Envelope env = new Envelope(todayEnvelopes[i]);
+
+                    // LOOKING FOR UNPACKED FILES :
+                    string methodName = MethodInfo.GetCurrentMethod().Name;
+                    try
+                    {
+                        foreach (string possiblePath in possibleOutputDirs)
+                        {
+                            string outputFilePath = NbuRootDir + possiblePath + env.fileName;
+
+                            if (File.Exists(outputFilePath))
+                            {
+                                env.fileLocation = outputFilePath;
+                                break;
+                            }
+                            //else
+                            //{
+                            //    env.fileLocation = " - " + outputFilePath;
+                            //}
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        nLogger.Error("{0}() - {1}", methodName, e.Message);
+                    }
+
 
                     // UPLOAD INTO DB
 
@@ -227,7 +262,7 @@ namespace NBU_Mailer_2016
         }
 
 
-        // UNPACK ENVELOPES AND SHOW ALL PARAMS :
+        // RUN - UNPACKING ENVELOPES AND SHOW ALL PARAMS :
         private void btnShowSelectedDateEnv_Click(object sender, RoutedEventArgs e)
         {
             ProcessEnvelopes();

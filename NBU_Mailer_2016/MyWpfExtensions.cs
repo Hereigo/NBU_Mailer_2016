@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace NBU_Mailer_2016
+﻿namespace NBU_Mailer_2016
 {
     public static class MyWpfExtensions
     {
@@ -24,12 +17,11 @@ namespace NBU_Mailer_2016
                 _handle = handle;
             }
 
-            #region IWin32Window Members
+            // IWin32Window Members
             System.IntPtr System.Windows.Forms.IWin32Window.Handle
             {
                 get { return _handle; }
             }
-            #endregion
         }
     }
 }
