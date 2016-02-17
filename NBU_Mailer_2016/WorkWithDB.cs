@@ -295,8 +295,10 @@ namespace NBU_Mailer_2016
         }
 
 
-        public void EnvelopeUpload(string envelopeTable, Envelope env)
+        public int EnvelopeUpload(string envelopeTable, Envelope env)
         {
+            int execRezult = 0;
+
             string methodName = MethodInfo.GetCurrentMethod().Name;
             try
             {
@@ -358,7 +360,7 @@ namespace NBU_Mailer_2016
                         cmd.Parameters.AddWithValue("@ENV_NAME", env.envelopeName);
                         cmd.Parameters.AddWithValue("@ENV_PATH", env.envelopePath);
 
-                        cmd.ExecuteNonQuery();
+                        execRezult = cmd.ExecuteNonQuery();
 
                         sqlConn.Close();
                     }
@@ -366,9 +368,12 @@ namespace NBU_Mailer_2016
             }
             catch (Exception e)
             {
+                execRezult = 0;
                 nLogger.Error("{0}() - {1}", methodName, e.Message);
             }
-        }
 
+            return execRezult;
+
+        }
     }
 }

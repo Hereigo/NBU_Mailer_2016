@@ -37,30 +37,11 @@ namespace NBU_Mailer_2016
 
         const string _ENVELOPE_TBL = "ENVELOPES";
 
-        static string _LOGIN_DB;
-
-        static string _PASS_DB;
-
         // TODO: WARNING !!!
         // TODO: WARNING !!!
         // TODO: WARNING !!!
 
         public static Logger nLogger = LogManager.GetCurrentClassLogger();
-
-
-        // - USEFUL CODE-SNIPPET :)  !!!!!!!!!!!!!!!
-        // - USEFUL CODE-SNIPPET :)  !!!!!!!!!!!!!!!
-        //
-        // using NLog;
-        // using System.Reflection;
-        // public static Logger nLogger = LogManager.GetCurrentClassLogger();
-        //
-        // string methodName = MethodInfo.GetCurrentMethod().Name;
-        // try{ }
-        // catch (Exception e) { 
-        //     nLogger.Error("{0}() - {1}", methodName, e.Message);
-        // }
-
 
         const string settsFile = "NBU_Mailer_2016.ini";
 
@@ -74,7 +55,6 @@ namespace NBU_Mailer_2016
             "\\USERD\\",
             "\\USERD\\Admin\\",
             "\\USERD\\Admin\\APPL\\",
-            "\\USERD\\Admin\\APPL_\\",  //  TEMPORARY FOR TESTS ONLY !!!!!!!
             "\\USERD\\Admin\\unknown\\",
             "\\USERD\\NBU\\APPL\\",
             "\\USERD\\NBU\\unknown\\",
@@ -94,15 +74,20 @@ namespace NBU_Mailer_2016
 
             InitializeStartParams();
 
-            textBox_4_Tests_Only.Text = Environment.NewLine + "Database = " + _DATABASE + " !!!" +
-                Environment.NewLine + Environment.NewLine + "Table is = " + _SPRUSNBU_TBL + " !!!";
+            textBox_4_Tests_Only.Text = Environment.NewLine + "SET LOGIN AND PASSWORD BEFORE USE !!!" +
+                Environment.NewLine + Environment.NewLine + "Database = " + _DATABASE + " !!!" +
+                Environment.NewLine + Environment.NewLine + "Table is = " + _SPRUSNBU_TBL + " !!!" +
+                 Environment.NewLine + Environment.NewLine + "TODAY ENVELOPES:";
+
+            byte timerMinutes = 15;  // 15 minutes should be by default.
 
             DispatcherTimer dispTimer = new DispatcherTimer();
-            dispTimer.Interval = new TimeSpan(0, 15, 0); // 15 minutes
+            dispTimer.Interval = new TimeSpan(0, timerMinutes, 0);
             dispTimer.Tick += RunEveryFifteenMin;
             dispTimer.Start();
 
-            labelForTimer.Content = "Next Autorun at " + DateTime.Now.AddMinutes(15).ToShortTimeString();
+            labelForTimer.Content = "Run Every " + timerMinutes + " min. Next Autorun at " +
+                DateTime.Now.AddMinutes(timerMinutes).ToString("HH:mm:ss");
         }
 
 
@@ -128,7 +113,6 @@ namespace NBU_Mailer_2016
             {
                 nLogger.Error(methodName + "() - " + exc.Message);
             }
-
         }
 
 
@@ -139,24 +123,21 @@ namespace NBU_Mailer_2016
         }
 
 
-        // UNPACK ENVELOPES AND SHOW ALL PARAMS :
+        // UNPACK ENVELOPES AND UPLOAD INTO DB :
         private void ProcessEnvelopes()
         {
-            if (textBoxForSqlLogin.Text.Trim().Length < 1 || textBoxForSqlPassword.Text.Trim().Length < 1)
+            string dbLogin = passwordBoxLogin.Password.Trim();
+            string dbPassw = passwordBoxPassw.Password.Trim();
+
+            if (dbLogin.Length < 1 || dbPassw.Length < 1)
             {
                 MessageBox.Show("Set Login & Password Before!");
             }
             else
             {
-                _LOGIN_DB = textBoxForSqlLogin.Text.Trim();
-                _PASS_DB = textBoxForSqlPassword.Text.Trim();
-                textBoxForSqlLogin.Text = "";
-                textBoxForSqlPassword.Text = "";
-
+                WorkWithDB workWithDB = new WorkWithDB(_DATABASE, dbLogin, dbPassw);
 
                 labelForTimer.Content = "Next Autorun at - " + DateTime.Now.AddMinutes(15).ToShortTimeString();
-
-                textBox_4_Tests_Only.Text = "TODAY ENVELOPES:";
 
                 FileInfo[] todayEnvelopes = GetEnvelopesListForDate(dataPicker.SelectedDate.Value);
 
@@ -192,43 +173,27 @@ namespace NBU_Mailer_2016
                             nLogger.Error("{0}() - {1}", methodName, e.Message);
                         }
 
-                        // UPLOAD INTO DB
+                        // UPLOAD INTO DB HERE :
 
+                        string todayUploadedLog = DateTime.Now.ToString("yyyyMMdd") + "_Uploaded.log";
 
-                        WorkWithDB workWithDB = new WorkWithDB(_DATABASE, _LOGIN_DB, _PASS_DB);
+                        if (!File.Exists(todayUploadedLog)) File.Create(todayUploadedLog);
 
-                        workWithDB.EnvelopeUpload(_ENVELOPE_TBL, env);
+                        // CHECK IF NOT UPLOADED YET :
+                        if (!File.ReadAllText(todayUploadedLog).Contains(env.envelopeName))
+                        {
+                            if (workWithDB.EnvelopeUpload(_ENVELOPE_TBL, env) != 0)
+                            {
+                                // IT MEANS - UPLOADED SUCCESSFULLY.
 
+                                File.AppendAllText(todayUploadedLog, env.envelopeName + " - " + env.fileName + Environment.NewLine);
 
-                        // TODO: WRITE CURRENT ENVELOPE INTO LOG-FILE - IF OK.
-                        // TODO: WRITE CURRENT ENVELOPE INTO LOG-FILE - IF OK.
-                        // TODO: WRITE CURRENT ENVELOPE INTO LOG-FILE - IF OK.
-
-
-                        // DEBUGGING OUTPUT TO TEXTBOX !!!
-                        // DEBUGGING OUTPUT TO TEXTBOX !!!
-                        // DEBUGGING OUTPUT TO TEXTBOX !!!
-                        textBox_4_Tests_Only.Text += Environment.NewLine + "====================================";
-                        //foreach (PropertyInfo propInfo in env.GetType().GetProperties())
-                        //    textBox_4_Tests_Only.Text += Environment.NewLine + propInfo.GetValue(env, null);
-                        textBox_4_Tests_Only.Text += Environment.NewLine + "en.envelopeName - " + env.envelopeName;
-                        textBox_4_Tests_Only.Text += Environment.NewLine + "en.envelopePath - " + env.envelopePath;
-                        textBox_4_Tests_Only.Text += Environment.NewLine + "e.fileDelivered - " + env.fileDelivered;
-                        textBox_4_Tests_Only.Text += Environment.NewLine + "en.fileLocation - " + env.fileLocation;
-                        textBox_4_Tests_Only.Text += Environment.NewLine + "e..fileModified - " + env.fileModified;
-                        textBox_4_Tests_Only.Text += Environment.NewLine + "env....fileName - " + env.fileName;
-                        textBox_4_Tests_Only.Text += Environment.NewLine + "env....fileSent - " + env.fileSent;
-                        textBox_4_Tests_Only.Text += Environment.NewLine + "env....fileSize - " + env.fileSize;
-                        textBox_4_Tests_Only.Text += Environment.NewLine + "recieve_Address - " + env.recieveAddress;
-                        textBox_4_Tests_Only.Text += Environment.NewLine + "sendFromAddress - " + env.sendFromAddress;
-
+                                textBox_4_Tests_Only.Text += Environment.NewLine + DateTime.Now + " - " + env.envelopeName + " - " + env.fileName;
+                            }
+                        }
                     }
                 }
-                else
-                {
-                    textBox_4_Tests_Only.Text += Environment.NewLine + "====================================" +
-                        Environment.NewLine + Environment.NewLine + "No New Envelopes For Selected Date.";
-                }
+                textBox_4_Tests_Only.Text += Environment.NewLine + DateTime.Now + " - Ok.";
             }
         }
 
@@ -239,10 +204,6 @@ namespace NBU_Mailer_2016
             string methodName = MethodInfo.GetCurrentMethod().Name;
             try
             {
-                // TODO: CHECK BD - CREATE IF NOT EXISTS !!!
-                // TODO: CHECK BD - CREATE IF NOT EXISTS !!!
-                // TODO: CHECK BD - CREATE IF NOT EXISTS !!!
-
                 if (!File.Exists(settsFile))
                 {
                     MessageBox.Show("Start Folder Is Not Set! Set It Before Use!");
@@ -255,7 +216,6 @@ namespace NBU_Mailer_2016
                     {
                         NbuRootDir = readedString;
                         textBoxForStartDir.Text = NbuRootDir;
-                        // MessageBox.Show("Start Folder Set As - " + NbuRootDir);
                     }
                     else
                     {
@@ -295,7 +255,7 @@ namespace NBU_Mailer_2016
         }
 
 
-        // RUN - UNPACKING ENVELOPES AND SHOW ALL PARAMS :
+        // RUN - UNPACKING ENVELOPES :
         private void btnShowSelectedDateEnv_Click(object sender, RoutedEventArgs e)
         {
             ProcessEnvelopes();
@@ -315,25 +275,36 @@ namespace NBU_Mailer_2016
             {
                 FileInfo dbfFile = new FileInfo(dlg.FileName);
 
-                if (textBoxForSqlLogin.Text.Trim().Length < 1 || textBoxForSqlPassword.Text.Trim().Length < 1)
+                string dbLogin = passwordBoxLogin.Password.Trim();
+                string dbPassw = passwordBoxPassw.Password.Trim();
+
+                if (dbLogin.Length < 1 || dbPassw.Length < 1)
                 {
                     MessageBox.Show("Set Login & Password Before!");
                 }
                 else
                 {
-                    _LOGIN_DB = textBoxForSqlLogin.Text.Trim();
-                    _PASS_DB = textBoxForSqlPassword.Text.Trim();
-                    textBoxForSqlLogin.Text = "";
-                    textBoxForSqlPassword.Text = "";
+                    WorkWithDB workWithDB = new WorkWithDB(_DATABASE, dbLogin, dbPassw);
 
-                    WorkWithDB workWithBD = new WorkWithDB(_DATABASE, _LOGIN_DB, _PASS_DB);
-
-                    MessageBox.Show(workWithBD.UpdateSprusnbuFromDbf(_SPRUSNBU_TBL,
+                    MessageBox.Show(workWithDB.UpdateSprusnbuFromDbf(_SPRUSNBU_TBL,
                         dbfFile.Directory.ToString(), dbfFile.Name));
                 }
             }
         }
 
+
+        // JUST OPEN LOG FILE :
+        private void btnViewUploaded_Click(object sender, RoutedEventArgs e)
+        {
+            // TODO: REFACTOR ME !!!
+            // TODO: REFACTOR ME !!!
+            // TODO: REFACTOR ME !!!
+            string todayUploadedLog = DateTime.Now.ToString("yyyyMMdd") + "_Uploaded.log";
+
+            if (!File.Exists(todayUploadedLog)) File.Create(todayUploadedLog);
+
+            Process.Start(todayUploadedLog);
+        }
 
 
         // TODO: CHECK LOG IF ENVEL NOT LOADED YET !!!
@@ -347,6 +318,21 @@ namespace NBU_Mailer_2016
         // 3. IF EARLIER THAN 23:00
 
         //      - 
+
+
+        // - USEFUL CODE-SNIPPET :)  !!!!!!!!!!!!!!!
+        // - USEFUL CODE-SNIPPET :)  !!!!!!!!!!!!!!!
+        //
+        // using NLog;
+        // using System.Reflection;
+        // public static Logger nLogger = LogManager.GetCurrentClassLogger();
+        //
+        // string methodName = MethodInfo.GetCurrentMethod().Name;
+        // try{ }
+        // catch (Exception e) { 
+        //     nLogger.Error("{0}() - {1}", methodName, e.Message);
+        // }
+
 
     }
 }

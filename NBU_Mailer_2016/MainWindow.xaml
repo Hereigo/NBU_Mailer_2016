@@ -8,14 +8,19 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         Title="NBU-Mail Uploader (Plakhtiy A.Net Development © 2016)" Height="350" Width="579.802" Icon="Envelope.ico">
     <Grid>
-        <TextBox x:Name="textBox_4_Tests_Only" Margin="10,38,10,69" TextWrapping="Wrap" Text="TODAY ENVELOPES:" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto" FontFamily="Consolas"/>
+        <TextBox x:Name="textBox_4_Tests_Only" Margin="10,69,10,72" TextWrapping="Wrap" Text="TODAY ENVELOPES:" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto" FontFamily="Consolas"/>
         <Button x:Name="btnShowSelectedDateEnv" Content="Show For Date" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,10" Width="93" Height="25" RenderTransformOrigin="0.822,0.448" Click="btnShowSelectedDateEnv_Click"/>
         <DatePicker x:Name="dataPicker" HorizontalAlignment="Left" Margin="10,0,0,40" VerticalAlignment="Bottom" SelectedDate="{x:Static sys:DateTime.Now}" Width="105"/>
         <TextBox x:Name="textBoxForStartDir" HorizontalAlignment="Stretch" Height="23" Margin="10,10,108,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" ToolTip="Press Button To Set Start Folder." UndoLimit="5" IsReadOnly="True"/>
         <Button x:Name="btnSelectStartDir" Content="Select Start Dir" HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Top" Width="93" Height="23" Click="btnSelectStartDir_Click"/>
-        <TextBox x:Name="textBoxForSqlLogin" HorizontalAlignment="Right" Height="23" Margin="0,0,101,41" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="69" UndoLimit="5" ToolTip="Login For SQL" IsHitTestVisible="True" RenderTransformOrigin="-0.302,0.299"/>
-        <TextBox x:Name="textBoxForSqlPassword" HorizontalAlignment="Right" Height="23" Margin="0,0,10,41" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="86" UndoLimit="5" ToolTip="Login For SQL" IsHitTestVisible="True" RenderTransformOrigin="-0.302,0.299"/>
         <Label x:Name="labelForTimer" Content="Next Autorun at 23:58" HorizontalAlignment="Stretch" Margin="108,0,175,10" VerticalAlignment="Bottom" Height="24" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
         <Button x:Name="btnSprusnbuUpd" Content="Update Sprusnbu From DBF" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,10,10" Width="160" Height="26" RenderTransformOrigin="0.822,0.448" Click="btnSprusnbuUpd_Click" />
+        <Label x:Name="loginLabel" Content="Login For SQL :" HorizontalAlignment="Left" Margin="10,38,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="passwLabel" Content="Password For SQL :" HorizontalAlignment="Left" Margin="185,38,0,0" VerticalAlignment="Top"/>
+        <PasswordBox x:Name="passwordBoxLogin" HorizontalAlignment="Left" Margin="105,42,0,0" VerticalAlignment="Top" Width="75" Height="20"/>
+        <PasswordBox x:Name="passwordBoxPassw" HorizontalAlignment="Left" Margin="300,42,0,0" VerticalAlignment="Top" Width="75" Height="20"/>
+        <Button x:Name="btnViewUploaded" Content="View Uploaded Log" HorizontalAlignment="Right" Margin="0,0,10,41" VerticalAlignment="Bottom" Width="117" Height="26" Click="btnViewUploaded_Click"/>
+        <!--<CheckBox x:Name="checkBoxLogPasEdit" Content="Allow Editing Login and Passw." HorizontalAlignment="Left" Margin="380,44,0,0" VerticalAlignment="Top" 
+        Width="182" Checked="checkBoxLogPasEdit_Checked" Unchecked="checkBoxLogPasEdit_Unchecked"/>-->
     </Grid>
 </Window>
