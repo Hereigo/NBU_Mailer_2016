@@ -103,15 +103,13 @@
     <Content Include="DB_Scripts\BanxPartners_Create.SQL" />
     <Content Include="DB_Scripts\Envelopes_Create.SQL" />
     <Content Include="DB_Scripts\Sprusnbu_Create.SQL" />
-    <Resource Include="DB_Scripts\_DB_Structure_Plan.txt" />
-    <Resource Include="Git_Ignore_NOT_Loaded_Example.xml" />
     <Content Include="Temporary_Test.dll" />
+    <Resource Include="DB_Scripts\_DB_Structure_Plan.txt" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <Resource Include="Envelope.ico" />
-    <Resource Include="Git_Ignore_Strings_Settings.txt" />
     <Content Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>

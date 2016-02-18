@@ -126,37 +126,38 @@ namespace NBU_Mailer_2016
         // UNPACK ENVELOPES AND UPLOAD INTO DB :
         private void ProcessEnvelopes()
         {
-            string dbLogin = passwordBoxLogin.Password.Trim();
-            string dbPassw = passwordBoxPassw.Password.Trim();
-
-            if (dbLogin.Length < 1 || dbPassw.Length < 1)
+            string methodName = MethodInfo.GetCurrentMethod().Name;
+            try
             {
-                MessageBox.Show("Set Login & Password Before!");
-            }
-            else
-            {
-                WorkWithDB workWithDB = new WorkWithDB(_DATABASE, dbLogin, dbPassw);
+                string dbLogin = passwordBoxLogin.Password.Trim();
+                string dbPassw = passwordBoxPassw.Password.Trim();
 
-                labelForTimer.Content = "Next Autorun at - " + DateTime.Now.AddMinutes(15).ToShortTimeString();
-
-                FileInfo[] todayEnvelopes = GetEnvelopesListForDate(dataPicker.SelectedDate.Value);
-
-                if (todayEnvelopes != null && todayEnvelopes.Length > 0)
+                if (dbLogin.Length < 1 || dbPassw.Length < 1)
                 {
-                    for (int i = 0; i < todayEnvelopes.Length; i++)
+                    MessageBox.Show("Set Login & Password Before!");
+                }
+                else
+                {
+                    WorkWithDB workWithDB = new WorkWithDB(_DATABASE, dbLogin, dbPassw);
+
+                    labelForTimer.Content = "Next Autorun at - " + DateTime.Now.AddMinutes(15).ToShortTimeString();
+
+                    FileInfo[] todayEnvelopes = GetEnvelopesListForDate(dataPicker.SelectedDate.Value);
+
+                    if (todayEnvelopes != null && todayEnvelopes.Length > 0)
                     {
-                        //  CREATE ENVELOPES FROM EVERY ENVELOPE-FILE :
-                        Envelope env = new Envelope(todayEnvelopes[i]);
-
-                        // TODO:  SOMETHING WRONG...
-                        // TODO:  SOMETHING WRONG...
-                        // TODO:  SOMETHING WRONG...
-                        env.fileLocation = "FILE NOT FOUND !!!";
-
-                        // LOOKING FOR UNPACKED FILES :
-                        string methodName = MethodInfo.GetCurrentMethod().Name;
-                        try
+                        for (int i = 0; i < todayEnvelopes.Length; i++)
                         {
+                            //  CREATE ENVELOPES FROM EVERY ENVELOPE-FILE :
+                            Envelope env = new Envelope(todayEnvelopes[i]);
+
+                            // TODO:  SOMETHING WRONG...
+                            // TODO:  SOMETHING WRONG...
+                            // TODO:  SOMETHING WRONG...
+                            env.fileLocation = "FILE NOT FOUND !!!";
+
+                            // LOOKING FOR UNPACKED FILES :
+
                             foreach (string possiblePath in possibleOutputDirs)
                             {
                                 string outputFilePath = NbuRootDir + possiblePath + env.fileName;
@@ -167,33 +168,34 @@ namespace NBU_Mailer_2016
                                     break;
                                 }
                             }
-                        }
-                        catch (Exception e)
-                        {
-                            nLogger.Error("{0}() - {1}", methodName, e.Message);
-                        }
 
-                        // UPLOAD INTO DB HERE :
 
-                        string todayUploadedLog = DateTime.Now.ToString("yyyyMMdd") + "_Uploaded.log";
+                            // UPLOAD INTO DB HERE :
 
-                        if (!File.Exists(todayUploadedLog)) File.Create(todayUploadedLog);
+                            string todayUploadedLog = DateTime.Now.ToString("yyyyMMdd") + "_Uploaded.log";
 
-                        // CHECK IF NOT UPLOADED YET :
-                        if (!File.ReadAllText(todayUploadedLog).Contains(env.envelopeName))
-                        {
-                            if (workWithDB.EnvelopeUpload(_ENVELOPE_TBL, env) != 0)
+                            if (!File.Exists(todayUploadedLog)) File.Create(todayUploadedLog);
+
+                            // CHECK IF NOT UPLOADED YET :
+                            if (!File.ReadAllText(todayUploadedLog).Contains(env.envelopeName))
                             {
-                                // IT MEANS - UPLOADED SUCCESSFULLY.
+                                if (workWithDB.EnvelopeUpload(_ENVELOPE_TBL, env) != 0)
+                                {
+                                    // IT MEANS - UPLOADED SUCCESSFULLY.
 
-                                File.AppendAllText(todayUploadedLog, env.envelopeName + " - " + env.fileName + Environment.NewLine);
+                                    File.AppendAllText(todayUploadedLog, env.envelopeName + " - " + env.fileName + Environment.NewLine);
 
-                                textBox_4_Tests_Only.Text += Environment.NewLine + DateTime.Now + " - " + env.envelopeName + " - " + env.fileName;
+                                    textBox_4_Tests_Only.Text += Environment.NewLine + DateTime.Now + " - " + env.envelopeName + " - " + env.fileName;
+                                }
                             }
                         }
                     }
+                    textBox_4_Tests_Only.Text += Environment.NewLine + DateTime.Now + " - Ok.";
                 }
-                textBox_4_Tests_Only.Text += Environment.NewLine + DateTime.Now + " - Ok.";
+            }
+            catch (Exception e)
+            {
+                nLogger.Error("{0}() - {1}", methodName, e.Message);
             }
         }
 
@@ -247,7 +249,7 @@ namespace NBU_Mailer_2016
             }
             catch (Exception exc)
             {
-                todayEnvelopes = null;
+                todayEnvelopes = new FileInfo[0];
                 nLogger.Error(methodName + "() - " + exc.Message);
             }
 
@@ -296,14 +298,22 @@ namespace NBU_Mailer_2016
         // JUST OPEN LOG FILE :
         private void btnViewUploaded_Click(object sender, RoutedEventArgs e)
         {
-            // TODO: REFACTOR ME !!!
-            // TODO: REFACTOR ME !!!
-            // TODO: REFACTOR ME !!!
-            string todayUploadedLog = DateTime.Now.ToString("yyyyMMdd") + "_Uploaded.log";
+            string methodName = MethodInfo.GetCurrentMethod().Name;
+            try
+            {
+                // TODO: REFACTOR ME !!!
+                // TODO: REFACTOR ME !!!
+                // TODO: REFACTOR ME !!!
+                string todayUploadedLog = DateTime.Now.ToString("yyyyMMdd") + "_Uploaded.log";
 
-            if (!File.Exists(todayUploadedLog)) File.Create(todayUploadedLog);
+                if (!File.Exists(todayUploadedLog)) File.Create(todayUploadedLog);
 
-            Process.Start(todayUploadedLog);
+                Process.Start(todayUploadedLog);
+            }
+            catch (Exception ex)
+            {
+                nLogger.Error("{0}() - {1}", methodName, ex.Message);
+            }
         }
 
 
