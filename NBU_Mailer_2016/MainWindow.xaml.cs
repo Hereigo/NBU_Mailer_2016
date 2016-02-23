@@ -37,6 +37,11 @@ namespace NBU_Mailer_2016
 
         const string _ENVELOPE_TBL = "ENVELOPES";
 
+        readonly string textBoxClearHeader = Environment.NewLine + "SET LOGIN AND PASSWORD BEFORE USE !!!" +
+                Environment.NewLine + Environment.NewLine + "Database = " + _DATABASE + " !!!" +
+                Environment.NewLine + Environment.NewLine + "Table is = " + _SPRUSNBU_TBL + " !!!" +
+                 Environment.NewLine + Environment.NewLine + "TODAY ENVELOPES:";
+
         // TODO: WARNING !!!
         // TODO: WARNING !!!
         // TODO: WARNING !!!
@@ -74,10 +79,7 @@ namespace NBU_Mailer_2016
 
             InitializeStartParams();
 
-            textBox_4_Tests_Only.Text = Environment.NewLine + "SET LOGIN AND PASSWORD BEFORE USE !!!" +
-                Environment.NewLine + Environment.NewLine + "Database = " + _DATABASE + " !!!" +
-                Environment.NewLine + Environment.NewLine + "Table is = " + _SPRUSNBU_TBL + " !!!" +
-                 Environment.NewLine + Environment.NewLine + "TODAY ENVELOPES:";
+            textBox_4_Tests_Only.Text = textBoxClearHeader;
 
             byte timerMinutes = 15;  // 15 minutes should be by default.
 
@@ -129,6 +131,14 @@ namespace NBU_Mailer_2016
             string methodName = MethodInfo.GetCurrentMethod().Name;
             try
             {
+                string todayUploadedLog = DateTime.Now.ToString("yyyyMMdd") + "_Uploaded.log";
+
+                if (!File.Exists(todayUploadedLog))
+                {
+                    File.Create(todayUploadedLog);
+                    textBox_4_Tests_Only.Text = textBoxClearHeader;
+                }
+
                 string dbLogin = passwordBoxLogin.Password.Trim();
                 string dbPassw = passwordBoxPassw.Password.Trim();
 
@@ -169,12 +179,7 @@ namespace NBU_Mailer_2016
                                 }
                             }
 
-
-                            // UPLOAD INTO DB HERE :
-
-                            string todayUploadedLog = DateTime.Now.ToString("yyyyMMdd") + "_Uploaded.log";
-
-                            if (!File.Exists(todayUploadedLog)) File.Create(todayUploadedLog);
+                            // UPLOAD INTO DB HERE !!! :
 
                             // CHECK IF NOT UPLOADED YET :
                             if (!File.ReadAllText(todayUploadedLog).Contains(env.envelopeName))
@@ -185,11 +190,16 @@ namespace NBU_Mailer_2016
 
                                     File.AppendAllText(todayUploadedLog, env.envelopeName + " - " + env.fileName + Environment.NewLine);
 
+                                    nLogger.Trace("{0}() - {1}", env.envelopeName, env.fileName);
+
                                     textBox_4_Tests_Only.Text += Environment.NewLine + DateTime.Now + " - " + env.envelopeName + " - " + env.fileName;
                                 }
                             }
                         }
                     }
+
+                    nLogger.Trace("Job finished successfully.");
+
                     textBox_4_Tests_Only.Text += Environment.NewLine + DateTime.Now + " - Ok.";
                 }
             }
@@ -295,20 +305,22 @@ namespace NBU_Mailer_2016
         }
 
 
-        // JUST OPEN LOG FILE :
+        // JUST OPEN LOG FILE FOR VIEW :
         private void btnViewUploaded_Click(object sender, RoutedEventArgs e)
         {
             string methodName = MethodInfo.GetCurrentMethod().Name;
             try
             {
-                // TODO: REFACTOR ME !!!
-                // TODO: REFACTOR ME !!!
-                // TODO: REFACTOR ME !!!
                 string todayUploadedLog = DateTime.Now.ToString("yyyyMMdd") + "_Uploaded.log";
 
-                if (!File.Exists(todayUploadedLog)) File.Create(todayUploadedLog);
-
-                Process.Start(todayUploadedLog);
+                if (File.Exists(todayUploadedLog))
+                {
+                    Process.Start(todayUploadedLog);
+                }
+                else
+                {
+                    MessageBox.Show(todayUploadedLog + " Not Found!");
+                }
             }
             catch (Exception ex)
             {
