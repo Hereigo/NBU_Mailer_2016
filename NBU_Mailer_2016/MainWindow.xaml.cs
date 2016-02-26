@@ -68,7 +68,13 @@ namespace NBU_Mailer_2016
             "\\USERD\\Vsem\\",
             "\\USERD\\Vsem\\APPL\\",
             "\\USERD\\Vsem\\unknown\\",
-            "\\USERD\\unknown\\"
+            "\\USERD\\unknown\\",
+            "\\USERD\\TEST\\"
+                //  DEBUGGING !!!!!!!!!!!!!!
+                //  DEBUGGING !!!!!!!!!!!!!!
+                //  DEBUGGING !!!!!!!!!!!!!!
+                //  DEBUGGING !!!!!!!!!!!!!!
+                //  DEBUGGING !!!!!!!!!!!!!!
         };
 
 
@@ -113,7 +119,7 @@ namespace NBU_Mailer_2016
             }
             catch (Exception exc)
             {
-                nLogger.Error(methodName + "() - " + exc.Message);
+                nLogger.Error("{0}() - {1}", methodName, exc.Message);
             }
         }
 
@@ -133,10 +139,16 @@ namespace NBU_Mailer_2016
             {
                 string todayUploadedLog = DateTime.Now.ToString("yyyyMMdd") + "_Uploaded.log";
 
+                // POSSIBLE A NEW DAY STARTED :
+
                 if (!File.Exists(todayUploadedLog))
                 {
+                    // TODO: DO NOT VIEW INBOX UNTIL BACKUP HAS FINISHED !!!
+                    // TODO: DO NOT VIEW INBOX UNTIL BACKUP HAS FINISHED !!!
+                    // TODO: DO NOT VIEW INBOX UNTIL BACKUP HAS FINISHED !!!
                     File.Create(todayUploadedLog);
                     textBox_4_Tests_Only.Text = textBoxClearHeader;
+                    System.Threading.Thread.Sleep(1000 * 3);
                 }
 
                 string dbLogin = passwordBoxLogin.Password.Trim();
@@ -235,9 +247,9 @@ namespace NBU_Mailer_2016
                     }
                 }
             }
-            catch (Exception exc)
+            catch (Exception e)
             {
-                nLogger.Error(methodName + "() - " + exc.Message);
+                nLogger.Error("{0}() - {1}", methodName, e.Message);
             }
         }
 
@@ -257,10 +269,10 @@ namespace NBU_Mailer_2016
                 todayEnvelopes = new DirectoryInfo(NbuRootDir +
                     envelTodayDirName + envelTodayShortPath).GetFiles();
             }
-            catch (Exception exc)
+            catch (Exception e)
             {
                 todayEnvelopes = new FileInfo[0];
-                nLogger.Error(methodName + "() - " + exc.Message);
+                nLogger.Error("{0}() - {1}", methodName, e.Message);
             }
 
             return todayEnvelopes;

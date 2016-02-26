@@ -76,7 +76,7 @@
     </Compile>
     <Compile Include="Envelope.cs" />
     <Compile Include="Git_Ignore_ALFA_TEST.cs" />
-    <Compile Include="Git_Ignore_IncomFile.cs" />
+    <Compile Include="Git_Ignore_OLD_IncomFile.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
