@@ -68,7 +68,13 @@ namespace NBU_Mailer_2016
             "\\USERD\\Vsem\\",
             "\\USERD\\Vsem\\APPL\\",
             "\\USERD\\Vsem\\unknown\\",
-            "\\USERD\\unknown\\"
+            "\\USERD\\unknown\\",
+            "\\USERD\\TEST\\"
+                //  DEBUGGING !!!!!!!!!!!!!!
+                //  DEBUGGING !!!!!!!!!!!!!!
+                //  DEBUGGING !!!!!!!!!!!!!!
+                //  DEBUGGING !!!!!!!!!!!!!!
+                //  DEBUGGING !!!!!!!!!!!!!!
         };
 
 
@@ -96,7 +102,7 @@ namespace NBU_Mailer_2016
         // SELECT START FOLDER PATH :
         private void btnSelectStartDir_Click(object sender, RoutedEventArgs e)
         {
-            string methodName = MethodInfo.GetCurrentMethod().Name;
+            //string methodName = MethodInfo.GetCurrentMethod().Name;
             try
             {
                 var foldBrowsDlg = new System.Windows.Forms.FolderBrowserDialog();
@@ -113,7 +119,7 @@ namespace NBU_Mailer_2016
             }
             catch (Exception exc)
             {
-                nLogger.Error(methodName + "() - " + exc.Message);
+                nLogger.Error("{0} - src : {1} - {2}", exc.Message, exc.Source, exc.TargetSite);
             }
         }
 
@@ -128,15 +134,21 @@ namespace NBU_Mailer_2016
         // UNPACK ENVELOPES AND UPLOAD INTO DB :
         private void ProcessEnvelopes()
         {
-            string methodName = MethodInfo.GetCurrentMethod().Name;
+            // string methodName = MethodInfo.GetCurrentMethod().Name;
             try
             {
                 string todayUploadedLog = DateTime.Now.ToString("yyyyMMdd") + "_Uploaded.log";
 
+                // POSSIBLE A NEW DAY STARTED :
+
                 if (!File.Exists(todayUploadedLog))
                 {
+                    // TODO: DO NOT VIEW INBOX UNTIL BACKUP HAS FINISHED !!!
+                    // TODO: DO NOT VIEW INBOX UNTIL BACKUP HAS FINISHED !!!
+                    // TODO: DO NOT VIEW INBOX UNTIL BACKUP HAS FINISHED !!!
                     File.Create(todayUploadedLog);
                     textBox_4_Tests_Only.Text = textBoxClearHeader;
+                    System.Threading.Thread.Sleep(1000 * 3);
                 }
 
                 string dbLogin = passwordBoxLogin.Password.Trim();
@@ -205,7 +217,7 @@ namespace NBU_Mailer_2016
             }
             catch (Exception e)
             {
-                nLogger.Error("{0}() - {1}", methodName, e.Message);
+                nLogger.Error("{0} - src : {1} - {2}", e.Message, e.Source, e.TargetSite);
             }
         }
 
@@ -213,7 +225,7 @@ namespace NBU_Mailer_2016
         // SETTS-FILE WITH STRT DIR :
         private void InitializeStartParams()
         {
-            string methodName = MethodInfo.GetCurrentMethod().Name;
+            // string methodName = MethodInfo.GetCurrentMethod().Name;
             try
             {
                 if (!File.Exists(settsFile))
@@ -235,9 +247,9 @@ namespace NBU_Mailer_2016
                     }
                 }
             }
-            catch (Exception exc)
+            catch (Exception e)
             {
-                nLogger.Error(methodName + "() - " + exc.Message);
+                nLogger.Error("{0} - src : {1} - {2}", e.Message, e.Source, e.TargetSite);
             }
         }
 
@@ -249,7 +261,7 @@ namespace NBU_Mailer_2016
 
             FileInfo[] todayEnvelopes;
 
-            string methodName = MethodInfo.GetCurrentMethod().Name;
+            // string methodName = MethodInfo.GetCurrentMethod().Name;
             try
             {
                 envelTodayShortPath = "A" + dt.ToString("ddMMyy") + "\\";
@@ -257,10 +269,10 @@ namespace NBU_Mailer_2016
                 todayEnvelopes = new DirectoryInfo(NbuRootDir +
                     envelTodayDirName + envelTodayShortPath).GetFiles();
             }
-            catch (Exception exc)
+            catch (Exception e)
             {
                 todayEnvelopes = new FileInfo[0];
-                nLogger.Error(methodName + "() - " + exc.Message);
+                nLogger.Error("{0} - src : {1} - {2}", e.Message, e.Source, e.TargetSite);
             }
 
             return todayEnvelopes;
