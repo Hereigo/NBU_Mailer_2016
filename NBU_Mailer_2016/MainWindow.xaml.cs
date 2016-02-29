@@ -18,6 +18,16 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
+// using NLog;
+// using System.Reflection;
+// public static Logger nLogger = LogManager.GetCurrentClassLogger();
+//
+// string methodName = MethodInfo.GetCurrentMethod().Name;
+// try{ }
+// catch (Exception e) { 
+//     nLogger.Error("{0}() - {1}", methodName, e.Message);
+// }
+
 namespace NBU_Mailer_2016
 {
     /// <summary>
@@ -340,6 +350,7 @@ namespace NBU_Mailer_2016
         }
 
 
+
         // TODO: CHECK LOG IF ENVEL NOT LOADED YET !!!
         // TODO: CHECK LOG IF ENVEL NOT LOADED YET !!!
         // TODO: CHECK LOG IF ENVEL NOT LOADED YET !!!
@@ -351,21 +362,5 @@ namespace NBU_Mailer_2016
         // 3. IF EARLIER THAN 23:00
 
         //      - 
-
-
-        // - USEFUL CODE-SNIPPET :)  !!!!!!!!!!!!!!!
-        // - USEFUL CODE-SNIPPET :)  !!!!!!!!!!!!!!!
-        //
-        // using NLog;
-        // using System.Reflection;
-        // public static Logger nLogger = LogManager.GetCurrentClassLogger();
-        //
-        // string methodName = MethodInfo.GetCurrentMethod().Name;
-        // try{ }
-        // catch (Exception e) { 
-        //     nLogger.Error("{0}() - {1}", methodName, e.Message);
-        // }
-
-
     }
 }
