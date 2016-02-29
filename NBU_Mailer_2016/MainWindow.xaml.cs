@@ -210,7 +210,7 @@ namespace NBU_Mailer_2016
                             nLogger.Trace("Job finished successfully.");
 
                             textBox_4_Tests_Only.Text += Environment.NewLine + DateTime.Now + " - Ok.";
-                        } 
+                        }
                     }
                 }
             }
