@@ -137,7 +137,11 @@ namespace NBU_Mailer_2016
         // RUN TASKS USING SHCHEDULER :
         private void RunEveryFifteenMin(object sender, EventArgs e)
         {
-            ProcessEnvelopes();
+            // DO NOT RUN UNTIL 7 O'CLOCK FOR WAITHING ALL BACKUP TASKS HAS FINISHED :
+            if (DateTime.Now.Hour > 7)
+            {
+                ProcessEnvelopes();
+            }
         }
 
 
@@ -154,73 +158,70 @@ namespace NBU_Mailer_2016
                 {
                     File.Create(todayUploadedLog);
                     textBox_4_Tests_Only.Text = textBoxClearHeader;
+                }
+                else
+                {
+                    string dbLogin = passwordBoxLogin.Password.Trim();
+                    string dbPassw = passwordBoxPassw.Password.Trim();
 
-                    // DO NOT RUN WHILE AN HOUR AFTER MIDNIGHT FOR WAITHING BACKUP HAS FINISHED :
-                    if (DateTime.Now.Hour < 1)
+                    if (dbLogin.Length < 1 || dbPassw.Length < 1)
                     {
-                        string dbLogin = passwordBoxLogin.Password.Trim();
-                        string dbPassw = passwordBoxPassw.Password.Trim();
+                        MessageBox.Show("Set Login & Password Before!");
+                    }
+                    else
+                    {
+                        WorkWithDB workWithDB = new WorkWithDB(_DATABASE, dbLogin, dbPassw);
 
-                        if (dbLogin.Length < 1 || dbPassw.Length < 1)
+                        labelForTimer.Content = "Next Autorun at - " + DateTime.Now.AddMinutes(15).ToShortTimeString();
+
+                        FileInfo[] todayEnvelopes = GetEnvelopesListForDate(dataPicker.SelectedDate.Value);
+
+                        if (todayEnvelopes != null && todayEnvelopes.Length > 0)
                         {
-                            MessageBox.Show("Set Login & Password Before!");
-                        }
-                        else
-                        {
-                            WorkWithDB workWithDB = new WorkWithDB(_DATABASE, dbLogin, dbPassw);
-
-                            labelForTimer.Content = "Next Autorun at - " + DateTime.Now.AddMinutes(15).ToShortTimeString();
-
-                            FileInfo[] todayEnvelopes = GetEnvelopesListForDate(dataPicker.SelectedDate.Value);
-
-                            if (todayEnvelopes != null && todayEnvelopes.Length > 0)
+                            for (int i = 0; i < todayEnvelopes.Length; i++)
                             {
-                                for (int i = 0; i < todayEnvelopes.Length; i++)
+                                //  CREATE ENVELOPES FROM EVERY ENVELOPE-FILE :
+                                Envelope env = new Envelope(todayEnvelopes[i]);
+
+                                // TODO:  SOMETHING WRONG...
+                                // TODO:  SOMETHING WRONG...
+                                // TODO:  SOMETHING WRONG...
+                                env.fileLocation = "FILE NOT FOUND !!!";
+
+                                // LOOKING FOR UNPACKED FILES :
+
+                                foreach (string possiblePath in possibleOutputDirs)
                                 {
-                                    //  CREATE ENVELOPES FROM EVERY ENVELOPE-FILE :
-                                    Envelope env = new Envelope(todayEnvelopes[i]);
+                                    string outputFilePath = NbuRootDir + possiblePath + env.fileName;
 
-                                    // TODO:  SOMETHING WRONG...
-                                    // TODO:  SOMETHING WRONG...
-                                    // TODO:  SOMETHING WRONG...
-                                    env.fileLocation = "FILE NOT FOUND !!!";
-
-                                    // LOOKING FOR UNPACKED FILES :
-
-                                    foreach (string possiblePath in possibleOutputDirs)
+                                    if (File.Exists(outputFilePath))
                                     {
-                                        string outputFilePath = NbuRootDir + possiblePath + env.fileName;
-
-                                        if (File.Exists(outputFilePath))
-                                        {
-                                            env.fileLocation = outputFilePath;
-                                            break;
-                                        }
+                                        env.fileLocation = outputFilePath;
+                                        break;
                                     }
+                                }
 
-                                    // UPLOAD INTO DB HERE !!! :
+                                // UPLOAD INTO DB HERE !!! :
 
-                                    // CHECK IF NOT UPLOADED YET :
-                                    if (!File.ReadAllText(todayUploadedLog).Contains(env.envelopeName))
+                                // CHECK IF NOT UPLOADED YET :
+                                if (!File.ReadAllText(todayUploadedLog).Contains(env.envelopeName))
+                                {
+                                    if (workWithDB.EnvelopeUpload(_ENVELOPE_TBL, env) != 0)
                                     {
-                                        if (workWithDB.EnvelopeUpload(_ENVELOPE_TBL, env) != 0)
-                                        {
-                                            // IT MEANS - UPLOADED SUCCESSFULLY.
+                                        // IT MEANS - UPLOADED SUCCESSFULLY.
 
-                                            File.AppendAllText(todayUploadedLog, env.envelopeName + " - " + env.fileName + Environment.NewLine);
+                                        File.AppendAllText(todayUploadedLog, env.envelopeName + " - " + env.fileName + Environment.NewLine);
 
-                                            nLogger.Trace("{0}() - {1}", env.envelopeName, env.fileName);
+                                        nLogger.Trace("{0}() - {1}", env.envelopeName, env.fileName);
 
-                                            textBox_4_Tests_Only.Text += Environment.NewLine + DateTime.Now + " - " + env.envelopeName + " - " + env.fileName;
-                                        }
+                                        textBox_4_Tests_Only.Text += Environment.NewLine + DateTime.Now + " - " + env.envelopeName + " - " + env.fileName;
                                     }
                                 }
                             }
-
-                            nLogger.Trace("Job finished successfully.");
-
-                            textBox_4_Tests_Only.Text += Environment.NewLine + DateTime.Now + " - Ok.";
                         }
+                        nLogger.Trace("Job finished successfully.");
+
+                        textBox_4_Tests_Only.Text += Environment.NewLine + DateTime.Now + " - Ok.";
                     }
                 }
             }
