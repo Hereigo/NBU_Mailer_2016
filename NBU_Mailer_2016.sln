@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NBU_Mailer_2016", "NBU_Mail
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Console_FOR_TESTS", "Console_FOR_TESTS\Console_FOR_TESTS.csproj", "{2ED38AF1-6788-4F9E-B445-9AB1AEFFD3F4}"
 EndProject
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Database_Test", "Database_Test\Database_Test.sqlproj", "{0879BFB1-EFC3-4BFD-B43D-1ECE1D822C78}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleScreenSender", "ConsoleScreenSender\ConsoleScreenSender.csproj", "{15D22B39-0EA3-4666-9C73-50F2010E046A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,12 +23,10 @@ Global
 		{2ED38AF1-6788-4F9E-B445-9AB1AEFFD3F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2ED38AF1-6788-4F9E-B445-9AB1AEFFD3F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2ED38AF1-6788-4F9E-B445-9AB1AEFFD3F4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0879BFB1-EFC3-4BFD-B43D-1ECE1D822C78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0879BFB1-EFC3-4BFD-B43D-1ECE1D822C78}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0879BFB1-EFC3-4BFD-B43D-1ECE1D822C78}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{0879BFB1-EFC3-4BFD-B43D-1ECE1D822C78}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0879BFB1-EFC3-4BFD-B43D-1ECE1D822C78}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0879BFB1-EFC3-4BFD-B43D-1ECE1D822C78}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{15D22B39-0EA3-4666-9C73-50F2010E046A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15D22B39-0EA3-4666-9C73-50F2010E046A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15D22B39-0EA3-4666-9C73-50F2010E046A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15D22B39-0EA3-4666-9C73-50F2010E046A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

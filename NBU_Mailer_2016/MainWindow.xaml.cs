@@ -1,21 +1,9 @@
 ﻿using NLog;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 
 // using NLog;
@@ -158,6 +146,7 @@ namespace NBU_Mailer_2016
                 {
                     File.Create(todayUploadedLog);
                     textBox_4_Tests_Only.Text = textBoxClearHeader;
+                    dataPicker.SelectedDate = DateTime.Now;
                 }
                 else
                 {
@@ -293,6 +282,8 @@ namespace NBU_Mailer_2016
         private void btnShowSelectedDateEnv_Click(object sender, RoutedEventArgs e)
         {
             ProcessEnvelopes();
+
+            dataPicker.SelectedDate = DateTime.Now;
         }
 
 
@@ -349,8 +340,6 @@ namespace NBU_Mailer_2016
                 nLogger.Error("{0}() - {1}", methodName, ex.Message);
             }
         }
-
-
 
         // TODO: CHECK LOG IF ENVEL NOT LOADED YET !!!
         // TODO: CHECK LOG IF ENVEL NOT LOADED YET !!!

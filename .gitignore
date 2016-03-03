@@ -2,6 +2,7 @@
 Git_Ignore*.*
 NLog.config
 Console_FOR_TESTS/
+ConsoleScreenSender/
 Database_Test/
 desktop.ini
 
