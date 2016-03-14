@@ -163,6 +163,7 @@ namespace NBU_Mailer_2016
 
                         labelForTimer.Content = "Next Autorun at - " + DateTime.Now.AddMinutes(15).ToShortTimeString();
 
+                        // GET TODAY ENVELOPES FROM TODAY-FOLDER :
                         FileInfo[] todayEnvelopes = GetEnvelopesListForDate(dataPicker.SelectedDate.Value);
 
                         if (todayEnvelopes != null && todayEnvelopes.Length > 0)
@@ -175,10 +176,9 @@ namespace NBU_Mailer_2016
                                 // TODO:  SOMETHING WRONG...
                                 // TODO:  SOMETHING WRONG...
                                 // TODO:  SOMETHING WRONG...
+
                                 env.fileLocation = "FILE NOT FOUND !!!";
-
                                 // LOOKING FOR UNPACKED FILES :
-
                                 foreach (string possiblePath in possibleOutputDirs)
                                 {
                                     string outputFilePath = NbuRootDir + possiblePath + env.fileName;
@@ -190,9 +190,9 @@ namespace NBU_Mailer_2016
                                     }
                                 }
 
-                                // UPLOAD INTO DB HERE !!! :
+                                // START UPLOAD INTO DB HERE !!! :
 
-                                // CHECK IF NOT UPLOADED YET :
+                                // CHECK IN LOG FILE IF NOT UPLOADED YET :
                                 if (!File.ReadAllText(todayUploadedLog).Contains(env.envelopeName))
                                 {
                                     if (workWithDB.EnvelopeUpload(_ENVELOPE_TBL, env) != 0)

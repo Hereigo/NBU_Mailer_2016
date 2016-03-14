@@ -312,6 +312,9 @@ namespace NBU_Mailer_2016
                     fileBody = new byte[1];
                     fileBodyParam1 = "";
                     fileBodyParam2 = "";
+
+                    nLogger.Error("{0}() - File Not Found {1} From Packet - {2}", 
+                        methodName, env.fileLocation, env.envelopeName);
                 }
                 else
                 { 
