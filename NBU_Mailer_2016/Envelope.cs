@@ -40,8 +40,9 @@ namespace NBU_Mailer_2016
             string methodName = MethodInfo.GetCurrentMethod().Name;
             try
             {
-                FileStream fs = new FileStream(envelope.FullName, FileMode.Open, FileAccess.Read);
+                // READ ALL PARAMS FROM CURRENT ENVELOPE-FILE :
 
+                FileStream fs = new FileStream(envelope.FullName, FileMode.Open, FileAccess.Read);
                 StreamReader sr = new StreamReader(fs);
                 string readOneLine;
 
@@ -89,7 +90,6 @@ namespace NBU_Mailer_2016
                 nLogger.Error("{0}() - {1}", methodName, e.Message);
             }
 
-
             //if (fileDelivered == DateTime.Parse("01.01.01 01:01:01"))
             //    fileDelivered = DateTime.Parse(DateTime.Now.ToString("dd.MM.yy HH:mm:ss"));
 
@@ -98,7 +98,6 @@ namespace NBU_Mailer_2016
             //   RE-CHECK EXTENSION !!!!!!!!!!!
             //   RE-CHECK EXTENSION !!!!!!!!!!!
             //   RE-CHECK EXTENSION !!!!!!!!!!!
-
         }
     }
 }

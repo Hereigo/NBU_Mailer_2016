@@ -6,16 +6,6 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Threading;
 
-// using NLog;
-// using System.Reflection;
-// public static Logger nLogger = LogManager.GetCurrentClassLogger();
-//
-// string methodName = MethodInfo.GetCurrentMethod().Name;
-// try{ }
-// catch (Exception e) { 
-//     nLogger.Error("{0}() - {1}", methodName, e.Message);
-// }
-
 namespace NBU_Mailer_2016
 {
     /// <summary>
@@ -23,22 +13,22 @@ namespace NBU_Mailer_2016
     /// </summary>
     public partial class MainWindow : Window
     {
-        // SET ALL PATHES HERE :
+        #region SET ALL PATHES HERE :
 
         // TODO: WARNING !!!
         // TODO: WARNING !!!
         // TODO: WARNING !!!
 
-        const string _DATABASE = "Andrew2";
+        const string _DATABASE = "Andrew2"; // ANDREW
 
-        const string _SPRUSNBU_TBL = "SPRUSNBU";
+        const string _SPRUSNBU_TBL = "SPRUSNBU"; // SPRUSNBU$
 
         const string _ENVELOPE_TBL = "ENVELOPES";
 
         readonly string textBoxClearHeader = Environment.NewLine + "SET LOGIN AND PASSWORD BEFORE USE !!!" +
                 Environment.NewLine + Environment.NewLine + "Database = " + _DATABASE + " !!!" +
                 Environment.NewLine + Environment.NewLine + "Table is = " + _SPRUSNBU_TBL + " !!!" +
-                 Environment.NewLine + Environment.NewLine + "TODAY ENVELOPES:";
+                Environment.NewLine + Environment.NewLine + "TODAY ENVELOPES:";
 
         // TODO: WARNING !!!
         // TODO: WARNING !!!
@@ -74,27 +64,7 @@ namespace NBU_Mailer_2016
                 //  DEBUGGING !!!!!!!!!!!!!!
                 //  DEBUGGING !!!!!!!!!!!!!!
         };
-
-
-        // RUN ALL INITIALIZERS & START TIMER :
-        public MainWindow()
-        {
-            InitializeComponent();
-
-            InitializeStartParams();
-
-            textBox_4_Tests_Only.Text = textBoxClearHeader;
-
-            byte timerMinutes = 15;  // 15 minutes should be by default.
-
-            DispatcherTimer dispTimer = new DispatcherTimer();
-            dispTimer.Interval = new TimeSpan(0, timerMinutes, 0);
-            dispTimer.Tick += RunEveryFifteenMin;
-            dispTimer.Start();
-
-            labelForTimer.Content = "Run Every " + timerMinutes + " min. Next Autorun at " +
-                DateTime.Now.AddMinutes(timerMinutes).ToString("HH:mm:ss");
-        }
+        #endregion
 
 
         // SELECT START FOLDER PATH :
@@ -122,106 +92,7 @@ namespace NBU_Mailer_2016
         }
 
 
-        // RUN TASKS USING SHCHEDULER :
-        private void RunEveryFifteenMin(object sender, EventArgs e)
-        {
-            // DO NOT RUN UNTIL 7 O'CLOCK FOR WAITHING ALL BACKUP TASKS HAS FINISHED :
-            if (DateTime.Now.Hour > 7)
-            {
-                ProcessEnvelopes();
-            }
-        }
-
-
-        // UNPACK ENVELOPES AND UPLOAD INTO DB :
-        private void ProcessEnvelopes()
-        {
-            string methodName = MethodInfo.GetCurrentMethod().Name;
-            try
-            {
-                string todayUploadedLog = DateTime.Now.ToString("yyyyMMdd") + "_Uploaded.log";
-
-                // POSSIBLE A NEW DAY STARTED :
-                if (!File.Exists(todayUploadedLog))
-                {
-                    File.Create(todayUploadedLog);
-                    textBox_4_Tests_Only.Text = textBoxClearHeader;
-                    dataPicker.SelectedDate = DateTime.Now;
-                }
-                else
-                {
-                    string dbLogin = passwordBoxLogin.Password.Trim();
-                    string dbPassw = passwordBoxPassw.Password.Trim();
-
-                    if (dbLogin.Length < 1 || dbPassw.Length < 1)
-                    {
-                        MessageBox.Show("Set Login & Password Before!");
-                    }
-                    else
-                    {
-                        WorkWithDB workWithDB = new WorkWithDB(_DATABASE, dbLogin, dbPassw);
-
-                        labelForTimer.Content = "Next Autorun at - " + DateTime.Now.AddMinutes(15).ToShortTimeString();
-
-                        // GET TODAY ENVELOPES FROM TODAY-FOLDER :
-                        FileInfo[] todayEnvelopes = GetEnvelopesListForDate(dataPicker.SelectedDate.Value);
-
-                        if (todayEnvelopes != null && todayEnvelopes.Length > 0)
-                        {
-                            for (int i = 0; i < todayEnvelopes.Length; i++)
-                            {
-                                //  CREATE ENVELOPES FROM EVERY ENVELOPE-FILE :
-                                Envelope env = new Envelope(todayEnvelopes[i]);
-
-                                // TODO:  SOMETHING WRONG...
-                                // TODO:  SOMETHING WRONG...
-                                // TODO:  SOMETHING WRONG...
-
-                                env.fileLocation = "FILE NOT FOUND !!!";
-                                // LOOKING FOR UNPACKED FILES :
-                                foreach (string possiblePath in possibleOutputDirs)
-                                {
-                                    string outputFilePath = NbuRootDir + possiblePath + env.fileName;
-
-                                    if (File.Exists(outputFilePath))
-                                    {
-                                        env.fileLocation = outputFilePath;
-                                        break;
-                                    }
-                                }
-
-                                // START UPLOAD INTO DB HERE !!! :
-
-                                // CHECK IN LOG FILE IF NOT UPLOADED YET :
-                                if (!File.ReadAllText(todayUploadedLog).Contains(env.envelopeName))
-                                {
-                                    if (workWithDB.EnvelopeUpload(_ENVELOPE_TBL, env) != 0)
-                                    {
-                                        // IT MEANS - UPLOADED SUCCESSFULLY.
-
-                                        File.AppendAllText(todayUploadedLog, env.envelopeName + " - " + env.fileName + Environment.NewLine);
-
-                                        nLogger.Trace("{0}() - {1}", env.envelopeName, env.fileName);
-
-                                        textBox_4_Tests_Only.Text += Environment.NewLine + DateTime.Now + " - " + env.envelopeName + " - " + env.fileName;
-                                    }
-                                }
-                            }
-                        }
-                        nLogger.Trace("Job finished successfully.");
-
-                        textBox_4_Tests_Only.Text += Environment.NewLine + DateTime.Now + " - Ok.";
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                nLogger.Error("{0}() - {1}", methodName, e.Message);
-            }
-        }
-
-
-        // SETTS-FILE WITH STRT DIR :
+        // SETTS-FILE WITH START DIR :
         private void InitializeStartParams()
         {
             string methodName = MethodInfo.GetCurrentMethod().Name;
@@ -253,10 +124,142 @@ namespace NBU_Mailer_2016
         }
 
 
+        // RUN ALL INITIALIZERS & START TIMER :
+        public MainWindow()
+        {
+            InitializeComponent();
+
+            InitializeStartParams();
+
+            textBox_4_Tests_Only.Text = textBoxClearHeader;
+
+            byte timerMinutes = 15;  // 15 minutes should be by default.
+
+            DispatcherTimer dispTimer = new DispatcherTimer();
+            dispTimer.Interval = new TimeSpan(0, timerMinutes, 0);
+            dispTimer.Tick += RunEveryFifteenMin;
+            dispTimer.Start();
+
+            labelForTimer.Content = "Run Every " + timerMinutes + " min. Next Autorun at " +
+                DateTime.Now.AddMinutes(timerMinutes).ToString("HH:mm:ss");
+        }
+
+
+        // RUN TASK IMMEDIATELY & RESET DATE TO CURREND DATE :
+        private void btnShowSelectedDateEnv_Click(object sender, RoutedEventArgs e)
+        {
+            ProcessEnvelopes();
+            dataPicker.SelectedDate = DateTime.Now;
+        }
+
+
+        // RUN TASKS USING SHCHEDULER :
+        private void RunEveryFifteenMin(object sender, EventArgs e)
+        {
+            // DON'T RUN UNTIL 7 O'CLOCK FOR WAITHING ALL BACKUP TASKS HAS FINISHED :
+
+            if (DateTime.Now.Hour > 7)
+            {
+                ProcessEnvelopes();
+            }
+        }
+
+
+        // UNPACK ENVELOPES AND UPLOAD INTO DB :
+        private void ProcessEnvelopes()
+        {
+            string methodName = MethodInfo.GetCurrentMethod().Name;
+            try
+            {
+                string todayUploadedLog = DateTime.Now.ToString("yyyyMMdd") + "_Uploaded.log";
+
+                // POSSIBLE A NEW DAY STARTED & NEW LOG FILE NEEDED :
+
+                if (!File.Exists(todayUploadedLog))
+                {
+                    File.Create(todayUploadedLog);
+                    textBox_4_Tests_Only.Text = textBoxClearHeader;
+                    dataPicker.SelectedDate = DateTime.Now;
+                }
+                else
+                {
+                    string dbLogin = passwordBoxLogin.Password.Trim();
+                    string dbPassw = passwordBoxPassw.Password.Trim();
+
+                    if (dbLogin.Length < 1 || dbPassw.Length < 1)
+                    {
+                        MessageBox.Show("Set Login & Password Before!");
+                    }
+                    else
+                    {
+                        WorkWithDB workWithDB = new WorkWithDB(_DATABASE, dbLogin, dbPassw);
+
+                        labelForTimer.Content = "Next Autorun at - " + DateTime.Now.AddMinutes(15).ToShortTimeString();
+
+                        // GET TODAY ENVELOPES FROM TODAY-FOLDER (OR ANOTHER SELECTED DATE) :
+
+                        FileInfo[] todayEnvelopes = GetEnvelopesListForDate(dataPicker.SelectedDate.Value);
+
+                        if (todayEnvelopes != null && todayEnvelopes.Length > 0)
+                        {
+                            for (int i = 0; i < todayEnvelopes.Length; i++)
+                            {
+                                // CREATE ENVELOPE USING EVERY ENVELOPE-FILE PARAMS :
+
+                                Envelope env = new Envelope(todayEnvelopes[i]);
+                                // TODO:  SOMETHING WRONG...
+                                // TODO:  SOMETHING WRONG...
+                                // TODO:  SOMETHING WRONG...
+                                env.fileLocation = "FILE NOT FOUND !!!";
+
+                                // CHECK IN LOG FILE IF NOT UPLOADED YET :
+
+                                if (!File.ReadAllText(todayUploadedLog).Contains(env.envelopeName))
+                                {
+                                    // GET UNPACKED FILES (LOOKING IN ALL POSSIBLE FOLDERS) :
+
+                                    foreach (string possiblePath in possibleOutputDirs)
+                                    {
+                                        string outputFilePath = NbuRootDir + possiblePath + env.fileName;
+
+                                        if (File.Exists(outputFilePath))
+                                        {
+                                            env.fileLocation = outputFilePath;
+                                            break;
+                                        }
+                                    }
+
+                                    // START UPLOAD INTO DB HERE !!! :
+
+                                    // IT MEANS - UPLOADED SUCCESSFULLY !
+                                    if (workWithDB.EnvelopeUpload(_ENVELOPE_TBL, env) != 0)
+                                    {
+                                        File.AppendAllText(todayUploadedLog, env.envelopeName + " - " + env.fileName + Environment.NewLine);
+
+                                        nLogger.Trace("{0}() - {1}", env.envelopeName, env.fileName);
+
+                                        textBox_4_Tests_Only.Text += Environment.NewLine + DateTime.Now + " - " + env.envelopeName + " - " + env.fileName;
+                                    }
+                                }
+                            }
+                        }
+                        nLogger.Trace("Job finished successfully.");
+
+                        textBox_4_Tests_Only.Text += Environment.NewLine + DateTime.Now + " - Ok.";
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                nLogger.Error("{0}() - {1}", methodName, e.Message);
+            }
+        }
+
+
         // GET LIST OF ALL TODAY ENVELOPES:
         private FileInfo[] GetEnvelopesListForDate(DateTime dt)
         {
-            // SET TODAY ENVELOPES PATH EVERY RUN BECAUSE DEPENDS ON DATE !!!
+            // SET TODAY ENVELOPES PATH EVERY RUN BECAUSE IT DEPENDS ON DATE !!!
 
             FileInfo[] todayEnvelopes;
 
@@ -278,16 +281,7 @@ namespace NBU_Mailer_2016
         }
 
 
-        // RUN - UNPACKING ENVELOPES :
-        private void btnShowSelectedDateEnv_Click(object sender, RoutedEventArgs e)
-        {
-            ProcessEnvelopes();
-
-            dataPicker.SelectedDate = DateTime.Now;
-        }
-
-
-        // "SPRUSNBU" FROM DBF:
+        // MANUAL !!! UPLOAD "SPRUSNBU" INTO SQL FROM DBF:
         private void btnSprusnbuUpd_Click(object sender, RoutedEventArgs e)
         {
             Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
@@ -352,5 +346,16 @@ namespace NBU_Mailer_2016
         // 3. IF EARLIER THAN 23:00
 
         //      - 
+
+        // using NLog;
+        // using System.Reflection;
+        // public static Logger nLogger = LogManager.GetCurrentClassLogger();
+        //
+        //
+        // string methodName = MethodInfo.GetCurrentMethod().Name;
+        // try{ }
+        // catch (Exception e) { 
+        //     nLogger.Error("{0}() - {1}", methodName, e.Message);
+        // }
     }
 }

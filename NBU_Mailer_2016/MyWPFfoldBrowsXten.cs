@@ -1,6 +1,6 @@
 ﻿namespace NBU_Mailer_2016
 {
-    public static class MyWpfExtensions
+    public static class MyWPFfoldBrowsXten
     {
         public static System.Windows.Forms.IWin32Window GetIWin32Window(this System.Windows.Media.Visual visual)
         {
