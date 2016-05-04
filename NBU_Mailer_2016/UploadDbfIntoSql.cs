@@ -7,10 +7,11 @@
 
     class UploadDbfIntoSql
     {
-        public void ReadDbfAndInsert(string dbfFilePath, string db, string table, string connString)
+        // READ DBF-FILE & INSERT NEW OR UPDATE EXISTING RECORDS IN SQL DB RELYING ON [IDHOST] FIELD :
+
+        public string ReadDbfAndInsert(string dbfFilePath, string db, string table, string connString)
         {
-            //string createTablCmd = "USE " + db + " CREATE TABLE [" + table + "] " +
-            //            "(" +
+            //string createTablCmd = "USE " + db + " CREATE TABLE [" + table + "] " + "(" +
             //            " [IDHOST] nvarchar(6) NOT NULL," +
             //            " [FNHOST] nvarchar(50) NOT NULL," +
             //            " [MFOM] integer," +
@@ -20,31 +21,12 @@
             //            " [PARTNER] bit," +
             //            " [UID] uniqueidentifier NOT NULL DEFAULT (newid())" +
             //            " ) ON [PRIMARY];";
-
-            // TODO :  MAKE BKP BEFORE IT !!!
-            // TODO :  MAKE BKP BEFORE IT !!!
-            // TODO :  MAKE BKP BEFORE IT !!!
-            // TODO :  MAKE BKP BEFORE IT !!!
-
-            //if (!TableIsExists(table, connString))
-            //{
-            //    Console.WriteLine("Trying To Create Table : " + table);
-            //    Console.ReadLine();
-            //    using (SqlConnection sqlConnect = new SqlConnection(connString))
-            //    {
-            //        sqlConnect.Open();
-            //        using (SqlCommand sqlcmd = new SqlCommand(createTablCmd, sqlConnect))
-            //        {
-            //            sqlcmd.ExecuteNonQuery();
-            //        }
-            //    }
-            //}
-
+            string retStr = "Trying to start...";
             try
             {
                 if (!TableIsExists(table, connString))
                 {
-                    Console.WriteLine("Not Found DB Table : " + table);
+                    retStr = "Not Found DB Table : " + table;
                 }
                 else
                 {
@@ -58,8 +40,8 @@
                     OdbcDataReader dataRdr = cmd.ExecuteReader();
 
                     // INCOMING_DBF_FILE - MAKET :
-                    //   0        1        2       3       4    5     6      7      8      9       10        11      12      13      14
-                    // IDHOST, IDHFIRST, FNHOST, WHATUS, TELE, MFOM, OKPO, GROUP, KTELE, KFASE, TYPESEND, Y_N_SEND, P_M_B, N_PATH, N_ADD_PATH
+                    //   0        1        2       3       4    5     6      7      8      9      10
+                    // IDHOST, IDHFIRST, FNHOST, WHATUS, TELE, MFOM, OKPO, GROUP, KTELE, KFASE,  . . .
 
                     if (dataRdr.HasRows)
                     {
@@ -134,12 +116,17 @@
                         }
                     }
                     connect.Close();
+
+                    retStr = table + " updated succesfully.";
                 }
             }
             catch (Exception exc)
             {
-                Console.WriteLine(exc.Message);
+                //Console.WriteLine(exc.Message);
+                retStr = exc.Message;
             }
+
+            return retStr;
         }
 
 

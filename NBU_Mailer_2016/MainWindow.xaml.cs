@@ -281,7 +281,7 @@ namespace NBU_Mailer_2016
         }
 
 
-        // MANUAL !!! UPLOAD "SPRUSNBU" INTO SQL FROM DBF:
+        // MANUAL !!! UPLOAD "SPRUSNBU" INTO !!! OLD PROM !!! SQL FROM DBF:
         private void btnSprusnbuUpd_Click(object sender, RoutedEventArgs e)
         {
             Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
@@ -308,6 +308,43 @@ namespace NBU_Mailer_2016
                     MessageBox.Show(workWithDB.UpdateSprusnbuFromDbf(_SPRUSNBU_TBL,
                         dbfFile.Directory.ToString(), dbfFile.Name));
                 }
+            }
+        }
+
+        // MANUAL !!! UPLOAD "SPRUSNBU" INTO NEW 2016 SQL FROM DBF:
+        private void NewSprusnbuIntoSql_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                // W A R N I N G !!!!!!!!!!!!!!!!!!!!
+                // W A R N I N G !!!!!!!!!!!!!!!!!!!!
+                // W A R N I N G !!!!!!!!!!!!!!!!!!!!
+                // W A R N I N G !!!!!!!!!!!!!!!!!!!!
+                // W A R N I N G !!!!!!!!!!!!!!!!!!!!
+                // W A R N I N G !!!!!!!!!!!!!!!!!!!!
+
+                string dbf = @"c:\nbumail\SPRUSNBU.DBF";
+
+                string table = "SPRUSNBU_BANKS";
+
+                string connString = "Server=MAIN; Database=" + _DATABASE + "; Uid=sa; Pwd=Sasasa3#";
+
+                // W A R N I N G !!!!!!!!!!!!!!!!!!!!
+                // W A R N I N G !!!!!!!!!!!!!!!!!!!!
+                // W A R N I N G !!!!!!!!!!!!!!!!!!!!
+                // W A R N I N G !!!!!!!!!!!!!!!!!!!!
+                // W A R N I N G !!!!!!!!!!!!!!!!!!!!
+
+                UploadDbfIntoSql uploadDbf = new UploadDbfIntoSql();
+
+                string uploadRez = uploadDbf.ReadDbfAndInsert(dbf, _DATABASE, table, connString);
+
+                MessageBox.Show(uploadRez);
+
+            }
+            catch (Exception exc)
+            {
+                MessageBox.Show(exc.Message);
             }
         }
 

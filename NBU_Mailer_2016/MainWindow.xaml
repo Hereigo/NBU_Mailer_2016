@@ -14,12 +14,13 @@
         <TextBox x:Name="textBoxForStartDir" HorizontalAlignment="Stretch" Height="23" Margin="10,10,108,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" ToolTip="Press Button To Set Start Folder." UndoLimit="5" IsReadOnly="True"/>
         <Button x:Name="btnSelectStartDir" Content="Select Start Dir" HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Top" Width="93" Height="23" Click="btnSelectStartDir_Click"/>
         <Label x:Name="labelForTimer" Content="Next Autorun at 23:58" HorizontalAlignment="Stretch" Margin="108,0,175,10" VerticalAlignment="Bottom" Height="24" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-        <Button x:Name="btnSprusnbuUpd" Content="Update Sprusnbu From DBF" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,10,10" Width="160" Height="26" RenderTransformOrigin="0.822,0.448" Click="btnSprusnbuUpd_Click" />
+        <Button x:Name="btnSprusnbuUpd_OLD" Content="Sprusnbu.DBF into PROM!" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,178,40" Width="152" Height="26" RenderTransformOrigin="0.822,0.448" Click="btnSprusnbuUpd_Click" />
         <Label x:Name="loginLabel" Content="Login For SQL :" HorizontalAlignment="Left" Margin="10,38,0,0" VerticalAlignment="Top"/>
         <Label x:Name="passwLabel" Content="Password For SQL :" HorizontalAlignment="Left" Margin="185,38,0,0" VerticalAlignment="Top"/>
         <PasswordBox x:Name="passwordBoxLogin" HorizontalAlignment="Left" Margin="105,42,0,0" VerticalAlignment="Top" Width="75" Height="20"/>
         <PasswordBox x:Name="passwordBoxPassw" HorizontalAlignment="Left" Margin="300,42,0,0" VerticalAlignment="Top" Width="75" Height="20"/>
-        <Button x:Name="btnViewUploaded" Content="View Uploaded Log" HorizontalAlignment="Right" Margin="0,0,10,41" VerticalAlignment="Bottom" Width="117" Height="26" Click="btnViewUploaded_Click"/>
+        <Button x:Name="btnViewUploaded" Content="View Uploaded Log" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="117" Height="26" Click="btnViewUploaded_Click"/>
+        <Button x:Name="btnSprusnbuUpd_NEW" Content="Sprusnbu.DBF into DEVELOP!" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,10,40" Width="163" Height="26" RenderTransformOrigin="0.822,0.448" Click="NewSprusnbuIntoSql_Click" />
         <!--<CheckBox x:Name="checkBoxLogPasEdit" Content="Allow Editing Login and Passw." HorizontalAlignment="Left" Margin="380,44,0,0" VerticalAlignment="Top" 
         Width="182" Checked="checkBoxLogPasEdit_Checked" Unchecked="checkBoxLogPasEdit_Unchecked"/>-->
     </Grid>
