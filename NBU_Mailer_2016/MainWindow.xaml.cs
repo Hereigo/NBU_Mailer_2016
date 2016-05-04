@@ -23,7 +23,7 @@ namespace NBU_Mailer_2016
 
         const string _SPRUSNBU_TBL = "SPRUSNBU"; // SPRUSNBU$
 
-        const string _ENVELOPE_TBL = "ENVELOPES";
+        const string _ENVELOPE_TBL = "NBU_ENVELOPES";
 
         readonly string textBoxClearHeader = Environment.NewLine + "SET LOGIN AND PASSWORD BEFORE USE !!!" +
                 Environment.NewLine + Environment.NewLine + "Database = " + _DATABASE + " !!!" +
@@ -39,6 +39,8 @@ namespace NBU_Mailer_2016
         const string settsFile = "NBU_Mailer_2016.ini";
 
         static string NbuRootDir;
+
+        static string SprusDbfFor2016;
 
         static string envelTodayDirName = "\\ARH\\";
 
@@ -81,7 +83,11 @@ namespace NBU_Mailer_2016
                 {
                     string path = foldBrowsDlg.SelectedPath;
                     File.WriteAllText(settsFile, path);
+
                     NbuRootDir = path;
+
+                    SprusDbfFor2016 = NbuRootDir + "\\SPRUSNBU.DBF";
+
                     textBoxForStartDir.Text = path;
                 }
             }
@@ -192,7 +198,7 @@ namespace NBU_Mailer_2016
                     }
                     else
                     {
-                        WorkWithDB workWithDB = new WorkWithDB(_DATABASE, dbLogin, dbPassw);
+                        WorkWithDB_2015 workWithDB = new WorkWithDB_2015(_DATABASE, dbLogin, dbPassw);
 
                         labelForTimer.Content = "Next Autorun at - " + DateTime.Now.AddMinutes(15).ToShortTimeString();
 
@@ -230,10 +236,15 @@ namespace NBU_Mailer_2016
                                     }
 
                                     // START UPLOAD INTO DB HERE !!! :
+                                    UploadEnvelope upload = new UploadEnvelope();
 
-                                    // IT MEANS - UPLOADED SUCCESSFULLY !
-                                    if (workWithDB.EnvelopeUpload(_ENVELOPE_TBL, env) != 0)
+                                    string connString = "Server=MAIN; Database=" + _DATABASE + "; Uid=" + dbLogin + "; Pwd=" + dbPassw + "";
+
+                                    if (upload.EnvelopeUpload(_SPRUSNBU_TBL, env, connString) != 0)
+                                    // if (workWithDB.EnvelopeUpload(_ENVELOPE_TBL, env) != 0)
                                     {
+                                        // IT MEANS - UPLOADED SUCCESSFULLY !
+
                                         File.AppendAllText(todayUploadedLog, env.envelopeName + " - " + env.fileName + Environment.NewLine);
 
                                         nLogger.Trace("{0}() - {1}", env.envelopeName, env.fileName);
@@ -303,7 +314,7 @@ namespace NBU_Mailer_2016
                 }
                 else
                 {
-                    WorkWithDB workWithDB = new WorkWithDB(_DATABASE, dbLogin, dbPassw);
+                    WorkWithDB_2015 workWithDB = new WorkWithDB_2015(_DATABASE, dbLogin, dbPassw);
 
                     MessageBox.Show(workWithDB.UpdateSprusnbuFromDbf(_SPRUSNBU_TBL,
                         dbfFile.Directory.ToString(), dbfFile.Name));
@@ -311,35 +322,40 @@ namespace NBU_Mailer_2016
             }
         }
 
+
         // MANUAL !!! UPLOAD "SPRUSNBU" INTO NEW 2016 SQL FROM DBF:
         private void NewSprusnbuIntoSql_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                // W A R N I N G !!!!!!!!!!!!!!!!!!!!
-                // W A R N I N G !!!!!!!!!!!!!!!!!!!!
-                // W A R N I N G !!!!!!!!!!!!!!!!!!!!
-                // W A R N I N G !!!!!!!!!!!!!!!!!!!!
-                // W A R N I N G !!!!!!!!!!!!!!!!!!!!
-                // W A R N I N G !!!!!!!!!!!!!!!!!!!!
+                string dbLogin = passwordBoxLogin.Password.Trim();
+                string dbPassw = passwordBoxPassw.Password.Trim();
 
-                string dbf = @"c:\nbumail\SPRUSNBU.DBF";
+                if (dbLogin.Length < 1 || dbPassw.Length < 1)
+                {
+                    MessageBox.Show("Set Login & Password Before!");
+                }
+                else
+                {
 
-                string table = "SPRUSNBU_BANKS";
 
-                string connString = "Server=MAIN; Database=" + _DATABASE + "; Uid=sa; Pwd=Sasasa3#";
 
-                // W A R N I N G !!!!!!!!!!!!!!!!!!!!
-                // W A R N I N G !!!!!!!!!!!!!!!!!!!!
-                // W A R N I N G !!!!!!!!!!!!!!!!!!!!
-                // W A R N I N G !!!!!!!!!!!!!!!!!!!!
-                // W A R N I N G !!!!!!!!!!!!!!!!!!!!
+                    string table = "SPRUSNBU_BANKS";
 
-                UploadDbfIntoSql uploadDbf = new UploadDbfIntoSql();
+                    string connString = "Server=MAIN; Database=" + _DATABASE + "; Uid=" + dbLogin + "; Pwd=" + dbPassw + "";
 
-                string uploadRez = uploadDbf.ReadDbfAndInsert(dbf, _DATABASE, table, connString);
+                    // W A R N I N G !!!!!!!!!!!!!!!!!!!!
+                    // W A R N I N G !!!!!!!!!!!!!!!!!!!!
+                    // W A R N I N G !!!!!!!!!!!!!!!!!!!!
+                    // W A R N I N G !!!!!!!!!!!!!!!!!!!!
+                    // W A R N I N G !!!!!!!!!!!!!!!!!!!!
 
-                MessageBox.Show(uploadRez);
+                    UploadDbfIntoSql uploadDbf = new UploadDbfIntoSql();
+
+                    string uploadRez = uploadDbf.ReadDbfAndInsert(SprusDbfFor2016, _DATABASE, table, connString);
+
+                    MessageBox.Show(uploadRez);
+                }
 
             }
             catch (Exception exc)

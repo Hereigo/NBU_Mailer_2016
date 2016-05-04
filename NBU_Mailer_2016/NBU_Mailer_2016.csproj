@@ -67,7 +67,8 @@
     <Compile Include="Git_Ignore_SaveFileFromSQL.cs" />
     <Compile Include="UploadDbfIntoSql.cs" />
     <Compile Include="MyWPFfoldBrowsXten.cs" />
-    <Compile Include="WorkWithDB.cs" />
+    <Compile Include="UploadEnvelope.cs" />
+    <Compile Include="WorkWithDB_2015.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

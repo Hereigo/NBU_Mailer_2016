@@ -12,7 +12,7 @@ using System.IO;
 
 namespace NBU_Mailer_2016
 {
-    class WorkWithDB
+    class WorkWithDB_2015
     {
         public static Logger nLogger = LogManager.GetCurrentClassLogger();
 
@@ -21,38 +21,13 @@ namespace NBU_Mailer_2016
         private readonly string _PASS;
         private readonly string _CONNSTR;
 
-        public WorkWithDB(string database, string user, string passw)
+        public WorkWithDB_2015(string database, string user, string passw)
         {
             _DATABASE = database;
             _USER = user;
             _PASS = passw;
             _CONNSTR = "Data Source=MAIN;uid=" + _USER + ";password=" + _PASS + ";database=" + _DATABASE;
         }
-
-
-        #region SQL TABLES SCRIPTS :
-
-        private const string sprunbuDescr =
-            "(" +
-            " [IDHOST] nvarchar(255)," +
-            " [IDHFIRST] nvarchar(255)," +
-            " [FNHOST] nvarchar(255)," +
-            " [WHATUS] nvarchar(255)," +
-            " [TELE] nvarchar(255)," +
-            " [MFOM] nvarchar(255)," +
-            " [OKPO] nvarchar(255)," +
-            " [GROUP] nvarchar(255)," +
-            " [KTELE] nvarchar(255)," +
-            " [KFASE] nvarchar(255)," +
-            " [TYPESEND] nvarchar(255)," +
-            " [Y_N_SEND] nvarchar(255)," +
-            " [P_M_B] nvarchar(255)," +
-            " [N_PATH] nvarchar(255)," +
-            " [N_ADD_PATH] nvarchar(255)," +
-            " [UID] uniqueidentifier NOT NULL DEFAULT (newid())" +
-            " ) ON [PRIMARY];";
-
-        #endregion
 
 
         private bool DbIsExists()
@@ -143,52 +118,6 @@ namespace NBU_Mailer_2016
             return tableIsExists;
         }
 
-
-        // CREATING EMPTY TABLE (NOT USED TEMPORARY !!!) :
-        private string CreateTableInDB(string tableName)
-        {
-            string createCommand = sprunbuDescr;
-
-            string rezulMsg = "Attempt To Create Table " + tableName + " Starting...";
-
-            string methodName = MethodInfo.GetCurrentMethod().Name;
-            try
-            {
-                //TODO: FINDOUT W.T.F.???!!!
-                //TODO: FINDOUT W.T.F.???!!!
-                //TODO: FINDOUT W.T.F.???!!!
-
-                //if (TableIsExists(tableName))
-                //{
-                //    rezulMsg = tableName + " is already exists!";
-                //}
-                //else
-                //{
-
-                using (SqlConnection sqlConnect = new SqlConnection(_CONNSTR))
-                {
-                    string creatingTablCmd = "USE " + _DATABASE +
-                        " CREATE TABLE [" + tableName + "] " + createCommand;
-
-                    sqlConnect.Open();
-
-                    using (SqlCommand sqlcmd = new SqlCommand(creatingTablCmd, sqlConnect))
-                    {
-                        sqlcmd.ExecuteNonQuery();
-                    }
-                }
-                rezulMsg = tableName + " - Created Successfully.";
-
-                //}
-            }
-            catch (Exception e)
-            {
-                rezulMsg = "WARNING! - " + e.Message;
-                nLogger.Error("{0}() - {1}", methodName, e.Message);
-            }
-
-            return rezulMsg;
-        }
 
 
         // UPLOAD DBF INTO DB AND FIX CHARACTERS :

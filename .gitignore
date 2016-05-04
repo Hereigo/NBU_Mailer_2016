@@ -4,6 +4,9 @@ NLog.config
 Console_FOR_TESTS/
 ConsoleScreenSender/
 Database_Test/
+DB_Scripts/BanxPartners_Create.SQL
+DB_Scripts/Envelopes_Create.SQL
+DB_Scripts/Sprusnbu_Create.SQL
 desktop.ini
 
 ## Ignore Visual Studio temporary files, build results, and
