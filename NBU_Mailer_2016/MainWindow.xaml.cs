@@ -19,6 +19,8 @@ namespace NBU_Mailer_2016
         // TODO: WARNING !!!
         // TODO: WARNING !!!
 
+        const string _SERVER = "MAIN";
+
         const string _DATABASE = "Andrew2"; // ANDREW
 
         const string _SPRUSNBU_TBL = "SPRUSNBU"; // SPRUSNBU$
@@ -238,10 +240,10 @@ namespace NBU_Mailer_2016
                                     // START UPLOAD INTO DB HERE !!! :
                                     UploadEnvelope upload = new UploadEnvelope();
 
-                                    string connString = "Server=MAIN; Database=" + _DATABASE + "; Uid=" + dbLogin + "; Pwd=" + dbPassw + "";
+                                    string connString = "Server=" + _SERVER + "; Database=" + _DATABASE + "; Uid=" + dbLogin + "; Pwd=" + dbPassw + "";
 
-                                    if (upload.EnvelopeUpload(_SPRUSNBU_TBL, env, connString) != 0)
-                                    // if (workWithDB.EnvelopeUpload(_ENVELOPE_TBL, env) != 0)
+                                    if (upload.EnvelopeUpload("NBU_ENVELOPES", env, connString) != 0)
+                                    // if (workWithDB.EnvelopeUpload(_ENVELOPE_TBL, env) != 0)  // OLD 2015 VERSION;
                                     {
                                         // IT MEANS - UPLOADED SUCCESSFULLY !
 
@@ -337,12 +339,9 @@ namespace NBU_Mailer_2016
                 }
                 else
                 {
-
-
-
                     string table = "SPRUSNBU_BANKS";
 
-                    string connString = "Server=MAIN; Database=" + _DATABASE + "; Uid=" + dbLogin + "; Pwd=" + dbPassw + "";
+                    string connString = "Server=" + _SERVER + "; Database=" + _DATABASE + "; Uid=" + dbLogin + "; Pwd=" + dbPassw + "";
 
                     // W A R N I N G !!!!!!!!!!!!!!!!!!!!
                     // W A R N I N G !!!!!!!!!!!!!!!!!!!!

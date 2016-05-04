@@ -9,23 +9,6 @@ using System.Data.SqlClient;
 
 namespace NBU_Mailer_2016
 {
-    // CREATE TABLE[NBU_ENVELOPES] (
-    // [ID] INT NOT NULL IDENTITY(1000,1) PRIMARY KEY,
-    // [FROM] nvarchar(15),
-    // [TO] nvarchar(15),
-    // [FILE_NAME] nvarchar(15),
-    // [FILE_SIZE] INT,
-    // [FILE_BODY] IMAGE,
-    // [FILE_DATE] datetime,
-    // [DATE_SENT] datetime,
-    // [DATE_DELIV] datetime,
-    // [ENV_NAME] nvarchar(15),
-    // [ENV_PATH] nvarchar(255),
-    // [SPRUSNBU_BANK_ID] INT,
-    // 
-    // INSERT INTO NBU_ENVELOPES([FROM], [TO], [FILE_NAME], FILE_SIZE, FILE_BODY, FILE_DATE, DATE_SENT, DATE_DELIV, ENV_NAME, ENV_PATH, SPRUSNBU_BANK_ID)
-    // VALUES('Sender1', 'Reciever1', 'FileName1', 333, '1/1/1', '1/1/1', '1/1/1', 'E_1_UYTX.ERT', 'Some-path', 1)
-
     class UploadEnvelope
     {
         public int EnvelopeUpload(string envelopeTable, Envelope env, string _CONNSTR)
@@ -57,22 +40,28 @@ namespace NBU_Mailer_2016
                     fileBodyParam2 = ", @FILE_BODY";
                 }
 
-                //	[FROM] nvarchar(15),
-                //	[TO] nvarchar(15),
-                //	[FILE_NAME] nvarchar(15),
-                //	[FILE_SIZE] int,
-                //	[FILE_BODY] IMAGE,
-                //	[FILE_DATE] datetime,
-                //	[DATE_SENT] datetime,
-                //	[DATE_DELIV] datetime,
-                //	[ENV_NAME] nvarchar(15),
-                //	[ENV_PATH] nvarchar(255),
+                // CREATE TABLE[NBU_ENVELOPES] (
+                // [ID] INT NOT NULL IDENTITY(1000,1) PRIMARY KEY,
+                // [FROM] nvarchar(15),
+                // [TO] nvarchar(15),
+                // [FILE_NAME] nvarchar(15),
+                // [FILE_SIZE] INT,
+                // [FILE_BODY] IMAGE,
+                // [FILE_DATE] datetime,
+                // [DATE_SENT] datetime,
+                // [DATE_DELIV] datetime,
+                // [ENV_NAME] nvarchar(15),
+                // [ENV_PATH] nvarchar(255),
+                // [SPRUSNBU_BANK_ID] INT,
+                // 
+                // INSERT INTO NBU_ENVELOPES([FROM], [TO], [FILE_NAME], FILE_SIZE, FILE_BODY, FILE_DATE, DATE_SENT, DATE_DELIV, ENV_NAME, ENV_PATH, SPRUSNBU_BANK_ID)
+                // VALUES('Sender1', 'Reciever1', 'FileName1', 333, '1/1/1', '1/1/1', '1/1/1', 'E_1_UYTX.ERT', 'Some-path', 1)
 
                 string insertString = "INSERT INTO " + envelopeTable +
-                " ([FROM], [TO], [FILE_NAME], [FILE_SIZE], [FILE_DATE], [DATE_SENT], [DATE_DELIV], [ENV_NAME], [ENV_PATH] " +
-                fileBodyParam1 + ") VALUES" +
-                " (@FROM, @TO, @FILE_NAME, @FILE_SIZE, @FILE_DATE, @DATE_SENT, @DATE_DELIV, @ENV_NAME, @ENV_PATH" +
-                fileBodyParam2 + ")";
+                " ([FROM], [TO], [FILE_NAME], [FILE_SIZE], [FILE_DATE], [DATE_SENT], [DATE_DELIV], [ENV_NAME], [ENV_PATH],"+
+                " [SPRUSNBU_BANK_ID]" + fileBodyParam1 + ") VALUES" +
+                " (@FROM, @TO, @FILE_NAME, @FILE_SIZE, @FILE_DATE, @DATE_SENT, @DATE_DELIV, @ENV_NAME, @ENV_PATH," +
+                " @SPRUSNBU_BANK_ID" + fileBodyParam2 + ")";
 
                 using (SqlConnection sqlConn = new SqlConnection(_CONNSTR))
                 {
@@ -80,6 +69,7 @@ namespace NBU_Mailer_2016
 
                     using (SqlCommand cmd = new SqlCommand(insertString, sqlConn))
                     {
+                        cmd.Parameters.AddWithValue("@SPRUSNBU_BANK_ID", 13);
                         cmd.Parameters.AddWithValue("@FILE_BODY", fileBody);
                         cmd.Parameters.AddWithValue("@FROM", env.sendFromAddress);
                         cmd.Parameters.AddWithValue("@TO", env.recieveAddress);
