@@ -57,14 +57,56 @@ namespace NBU_Mailer_2016
                 // INSERT INTO NBU_ENVELOPES([FROM], [TO], [FILE_NAME], FILE_SIZE, FILE_BODY, FILE_DATE, DATE_SENT, DATE_DELIV, ENV_NAME, ENV_PATH, SPRUSNBU_BANK_ID)
                 // VALUES('Sender1', 'Reciever1', 'FileName1', 333, '1/1/1', '1/1/1', '1/1/1', 'E_1_UYTX.ERT', 'Some-path', 1)
 
+
+                // SELECT [id] FROM SPRUSNBU_BANKS WHERE [idhost] = 'ubla'
+
                 string insertString = "INSERT INTO " + envelopeTable +
                 " ([FROM], [TO], [FILE_NAME], [FILE_SIZE], [FILE_DATE], [DATE_SENT], [DATE_DELIV], [ENV_NAME], [ENV_PATH],"+
                 " [SPRUSNBU_BANK_ID]" + fileBodyParam1 + ") VALUES" +
                 " (@FROM, @TO, @FILE_NAME, @FILE_SIZE, @FILE_DATE, @DATE_SENT, @DATE_DELIV, @ENV_NAME, @ENV_PATH," +
                 " @SPRUSNBU_BANK_ID" + fileBodyParam2 + ")";
 
+                string currentIdHost = env.sendFromAddress.Substring(env.sendFromAddress.Length - 4);
+
+                // TODO : FULL REBUILD !!!!!!!!
+                // TODO : FULL REBUILD !!!!!!!!
+                // TODO : FULL REBUILD !!!!!!!!
+                // TODO : FULL REBUILD !!!!!!!!
+
+                //string getIdForHost = "SELECT [ID] FROM SPRUSNBU_BANKS WHERE [IDHOST]='" + currentIdHost + "'";
+
+                // RETURN  -1  !!!!!!
+                // RETURN  -1  !!!!!!
+                // RETURN  -1  !!!!!!
+                // RETURN  -1  !!!!!!
+                // RETURN  -1  !!!!!!
+
+                string getIdForHost = "SELECT[ID] FROM SPRUSNBU_BANKS WHERE[IDHOST] = 'UiXQ'";
+
+                // TODO : SETUP DEFAULT + UPLOAD INTO DB RECORDS WITHOUT OKPO or MFO !!!!!!
+                // TODO : SETUP DEFAULT + UPLOAD INTO DB RECORDS WITHOUT OKPO or MFO !!!!!!
+                // TODO : SETUP DEFAULT + UPLOAD INTO DB RECORDS WITHOUT OKPO or MFO !!!!!!
+                // TODO : SETUP DEFAULT + UPLOAD INTO DB RECORDS WITHOUT OKPO or MFO !!!!!!
+
+                MessageBox.Show("QUERY : " + getIdForHost);
+                
                 using (SqlConnection sqlConn = new SqlConnection(_CONNSTR))
                 {
+                    sqlConn.Open();
+
+                    int IdForHost = 1;
+
+                    using (SqlCommand cmd = new SqlCommand(getIdForHost, sqlConn))
+                    {
+                        IdForHost = cmd.ExecuteNonQuery();
+
+                        MessageBox.Show("REZULT ID = " + IdForHost);
+                    }
+
+                    // ?????
+                    // ?????
+                    // ?????
+                    sqlConn.Close();
                     sqlConn.Open();
 
                     using (SqlCommand cmd = new SqlCommand(insertString, sqlConn))
