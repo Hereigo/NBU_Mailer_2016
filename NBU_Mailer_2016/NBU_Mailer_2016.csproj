@@ -64,8 +64,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="MyWPFfoldBrowsXten.cs" />
+    <Compile Include="Git_Ignore_SaveFileFromSQL.cs" />
     <Compile Include="UploadDbfIntoSql.cs" />
+    <Compile Include="MyWPFfoldBrowsXten.cs" />
     <Compile Include="WorkWithDB.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -76,6 +77,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Envelope.cs" />
+    <Content Include="DB_Scripts\Create_DB_Tables.sql" />
     <Content Include="Git_Ignore_ALFA_TEST.cs.txt" />
     <Content Include="Git_Ignore_OLD_IncomFile.cs.txt" />
     <Compile Include="MainWindow.xaml.cs">

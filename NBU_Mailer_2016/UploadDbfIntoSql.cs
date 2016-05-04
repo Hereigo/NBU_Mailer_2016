@@ -7,49 +7,44 @@
 
     class UploadDbfIntoSql
     {
-        public void ReadDbf(string dbfFilePath, string db, string table, string connString)
+        public void ReadDbfAndInsert(string dbfFilePath, string db, string table, string connString)
         {
-            string createTablCmd = "USE " + db + " CREATE TABLE [" + table + "] " +
-                        "(" +
-                        " [IDHOST] nvarchar(6) NOT NULL," +
-                        " [FNHOST] nvarchar(50) NOT NULL," +
-                        " [MFOM] integer," +
-                        " [OKPO] integer," +
-                        " [KTELE] nvarchar(30)," +
-                        " [KFASE] nvarchar(50)," +
-                        " [PARTNER] bit," +
-                        " [UID] uniqueidentifier NOT NULL DEFAULT (newid())" +
-                        " ) ON [PRIMARY];";
+            //string createTablCmd = "USE " + db + " CREATE TABLE [" + table + "] " +
+            //            "(" +
+            //            " [IDHOST] nvarchar(6) NOT NULL," +
+            //            " [FNHOST] nvarchar(50) NOT NULL," +
+            //            " [MFOM] integer," +
+            //            " [OKPO] integer," +
+            //            " [KTELE] nvarchar(30)," +
+            //            " [KFASE] nvarchar(50)," +
+            //            " [PARTNER] bit," +
+            //            " [UID] uniqueidentifier NOT NULL DEFAULT (newid())" +
+            //            " ) ON [PRIMARY];";
 
-            // INCOMING_DBF_FILE - MAKET :
-            //   0        1        2       3       4    5     6      7      8      9       10        11      12      13      14
-            // IDHOST, IDHFIRST, FNHOST, WHATUS, TELE, MFOM, OKPO, GROUP, KTELE, KFASE, TYPESEND, Y_N_SEND, P_M_B, N_PATH, N_ADD_PATH
+            // TODO :  MAKE BKP BEFORE IT !!!
+            // TODO :  MAKE BKP BEFORE IT !!!
+            // TODO :  MAKE BKP BEFORE IT !!!
+            // TODO :  MAKE BKP BEFORE IT !!!
+
+            //if (!TableIsExists(table, connString))
+            //{
+            //    Console.WriteLine("Trying To Create Table : " + table);
+            //    Console.ReadLine();
+            //    using (SqlConnection sqlConnect = new SqlConnection(connString))
+            //    {
+            //        sqlConnect.Open();
+            //        using (SqlCommand sqlcmd = new SqlCommand(createTablCmd, sqlConnect))
+            //        {
+            //            sqlcmd.ExecuteNonQuery();
+            //        }
+            //    }
+            //}
+
             try
             {
-                // TODO :  MAKE BKP BEFORE IT !!!
-                // TODO :  MAKE BKP BEFORE IT !!!
-                // TODO :  MAKE BKP BEFORE IT !!!
-                // TODO :  MAKE BKP BEFORE IT !!!
-
                 if (!TableIsExists(table, connString))
                 {
-                    Console.WriteLine("Trying To Create Table : " + table);
-                    Console.ReadLine();
-
-                    using (SqlConnection sqlConnect = new SqlConnection(connString))
-                    {
-                        sqlConnect.Open();
-
-                        using (SqlCommand sqlcmd = new SqlCommand(createTablCmd, sqlConnect))
-                        {
-                            sqlcmd.ExecuteNonQuery();
-                        }
-                    }
-                }
-
-                if (!TableIsExists(table, connString))
-                {
-                    Console.WriteLine("Can not Create DB Table : " + table);
+                    Console.WriteLine("Not Found DB Table : " + table);
                 }
                 else
                 {
@@ -61,6 +56,10 @@
                     OdbcCommand cmd = new OdbcCommand("SELECT * FROM " + dbfFilePath, connect);
 
                     OdbcDataReader dataRdr = cmd.ExecuteReader();
+
+                    // INCOMING_DBF_FILE - MAKET :
+                    //   0        1        2       3       4    5     6      7      8      9       10        11      12      13      14
+                    // IDHOST, IDHFIRST, FNHOST, WHATUS, TELE, MFOM, OKPO, GROUP, KTELE, KFASE, TYPESEND, Y_N_SEND, P_M_B, N_PATH, N_ADD_PATH
 
                     if (dataRdr.HasRows)
                     {
@@ -119,7 +118,7 @@
                                 }
                             }
 
-                            // ALL ROWS INSERTED. NOW UPDATE SPECIFIC SYMBOLS IN THEM :
+                            // ALL ROWS INSERTED. NOW REPLACE SPECIFIC DOS SYMBOLS IN THEM :
 
                             string charsFixCmd = "UPDATE " + table + " SET FNHOST = REPLACE(FNHOST, '=', '\"')" +
                                                  "UPDATE " + table + " SET FNHOST = REPLACE(FNHOST, '°', 'Ї')" +
