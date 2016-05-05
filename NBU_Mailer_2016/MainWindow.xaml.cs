@@ -42,8 +42,6 @@ namespace NBU_Mailer_2016
 
         static string NbuRootDir;
 
-        static string SprusDbfFor2016;
-
         static string envelTodayDirName = "\\ARH\\";
 
         static string envelTodayShortPath;
@@ -88,7 +86,7 @@ namespace NBU_Mailer_2016
 
                     NbuRootDir = path;
 
-                    SprusDbfFor2016 = NbuRootDir + "\\SPRUSNBU.DBF";
+                    // SprusDbfFor2016 = NbuRootDir + "\\SPRUSNBU.DBF";
 
                     textBoxForStartDir.Text = path;
                 }
@@ -330,32 +328,42 @@ namespace NBU_Mailer_2016
         {
             try
             {
-                string dbLogin = passwordBoxLogin.Password.Trim();
-                string dbPassw = passwordBoxPassw.Password.Trim();
+                Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+                dlg.DefaultExt = ".dbf";
+                dlg.Filter = "DBF Files Only (*.dbf)|*.dbf";
 
-                if (dbLogin.Length < 1 || dbPassw.Length < 1)
+                bool? dbfFileSelected = dlg.ShowDialog();
+
+                if (dbfFileSelected == true)
                 {
-                    MessageBox.Show("Set Login & Password Before!");
+                    //FileInfo dbfFile = new FileInfo(dlg.FileName);
+
+                    string dbLogin = passwordBoxLogin.Password.Trim();
+                    string dbPassw = passwordBoxPassw.Password.Trim();
+
+                    if (dbLogin.Length < 1 || dbPassw.Length < 1)
+                    {
+                        MessageBox.Show("Set Login & Password Before!");
+                    }
+                    else
+                    {
+                        // W A R N I N G !!!!!!!!!!!!!!!!!!!!
+                        // W A R N I N G !!!!!!!!!!!!!!!!!!!!
+                        // W A R N I N G !!!!!!!!!!!!!!!!!!!!
+                        // W A R N I N G !!!!!!!!!!!!!!!!!!!!
+                        // W A R N I N G !!!!!!!!!!!!!!!!!!!!
+
+                        string table = "SPRUSNBU_BANKS";
+
+                        string connString = "Server=" + _SERVER + "; Database=" + _DATABASE + "; Uid=" + dbLogin + "; Pwd=" + dbPassw + "";
+
+                        UploadDbfIntoSql uploadDbf = new UploadDbfIntoSql();
+
+                        string uploadRez = uploadDbf.ReadDbfAndInsert(dlg.FileName, _DATABASE, table, connString);
+
+                        MessageBox.Show(uploadRez);
+                    }
                 }
-                else
-                {
-                    string table = "SPRUSNBU_BANKS";
-
-                    string connString = "Server=" + _SERVER + "; Database=" + _DATABASE + "; Uid=" + dbLogin + "; Pwd=" + dbPassw + "";
-
-                    // W A R N I N G !!!!!!!!!!!!!!!!!!!!
-                    // W A R N I N G !!!!!!!!!!!!!!!!!!!!
-                    // W A R N I N G !!!!!!!!!!!!!!!!!!!!
-                    // W A R N I N G !!!!!!!!!!!!!!!!!!!!
-                    // W A R N I N G !!!!!!!!!!!!!!!!!!!!
-
-                    UploadDbfIntoSql uploadDbf = new UploadDbfIntoSql();
-
-                    string uploadRez = uploadDbf.ReadDbfAndInsert(SprusDbfFor2016, _DATABASE, table, connString);
-
-                    MessageBox.Show(uploadRez);
-                }
-
             }
             catch (Exception exc)
             {

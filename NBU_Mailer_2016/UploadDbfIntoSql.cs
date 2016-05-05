@@ -66,38 +66,38 @@
 
                                 // IF CURRENT RECORD HAS MFO OR OKPO :
                                 // OR may be it is NEEDLESS ?
-                                if (mfom > 0 || okpo > 0)
+                                // if (mfom > 0 || okpo > 0)
+                                // {
+                                string idHost = row[dt.Columns[0]].ToString(); // ID !!!
+
+                                string fnHost = row[dt.Columns[2]].ToString().ToString().Replace('\'', '=').Replace('"', '=');
+                                string kTele = row[dt.Columns[8]].ToString().ToString().Replace('\'', '=').Replace('"', '=');
+                                string kFase = row[dt.Columns[9]].ToString().ToString().Replace('\'', '=').Replace('"', '=');
+
+                                // UPDATE Table1 SET(…) WHERE Column1 =’SomeValue’
+                                // IF @@ROWCOUNT = 0
+                                // INSERT INTO Table1 VALUES (…)
+
+                                string insertUpdateCmd = "UPDATE " + table + " SET " +
+                                    "MFOM = '" + mfom + "', OKPO = '" + okpo + "', FNHOST = '" + fnHost +
+                                    "', KTELE = '" + kTele + "', KFASE = '" + kFase +
+                                    "' WHERE IDHOST = '" + idHost +
+                                    "' IF @@ROWCOUNT = 0 INSERT INTO " + table +
+                                    " (IDHOST, MFOM, OKPO, KTELE, FNHOST, KFASE, PARTNER) VALUES (" +
+                                    "'" + idHost + "', " + "'" + mfom + "', " + "'" + okpo + "', " +
+                                    "'" + kTele + "', " + "'" + fnHost + "', " + "'" + kFase + "', " + 0 + ")";
+                                // TODO: USE STRINGBUILDER !!!
+                                // TODO: USE STRINGBUILDER !!!
+                                // TODO: USE STRINGBUILDER !!!
+
+                                using (SqlCommand sqlcmd = new SqlCommand(insertUpdateCmd, sqlConnect))
                                 {
-                                    string idHost = row[dt.Columns[0]].ToString(); // ID !!!
-
-                                    string fnHost = row[dt.Columns[2]].ToString().ToString().Replace('\'', '=').Replace('"', '=');
-                                    string kTele = row[dt.Columns[8]].ToString().ToString().Replace('\'', '=').Replace('"', '=');
-                                    string kFase = row[dt.Columns[9]].ToString().ToString().Replace('\'', '=').Replace('"', '=');
-
-                                    // UPDATE Table1 SET(…) WHERE Column1 =’SomeValue’
-                                    // IF @@ROWCOUNT = 0
-                                    // INSERT INTO Table1 VALUES (…)
-
-                                    string insertUpdateCmd = "UPDATE " + table + " SET " +
-                                        "MFOM = '" + mfom + "', OKPO = '" + okpo + "', FNHOST = '" + fnHost +
-                                        "', KTELE = '" + kTele + "', KFASE = '" + kFase +
-                                        "' WHERE IDHOST = '" + idHost +
-                                        "' IF @@ROWCOUNT = 0 INSERT INTO " + table +
-                                        " (IDHOST, MFOM, OKPO, KTELE, FNHOST, KFASE, PARTNER) VALUES (" +
-                                        "'" + idHost + "', " + "'" + mfom + "', " + "'" + okpo + "', " +
-                                        "'" + kTele + "', " + "'" + fnHost + "', " + "'" + kFase + "', " + 0 + ")";
-                                    // TODO: USE STRINGBUILDER !!!
-                                    // TODO: USE STRINGBUILDER !!!
-                                    // TODO: USE STRINGBUILDER !!!
-
-                                    using (SqlCommand sqlcmd = new SqlCommand(insertUpdateCmd, sqlConnect))
-                                    {
-                                        sqlcmd.ExecuteNonQuery();
-                                    }
-                                    // TODO: WRITE LOG OF CHANGES !!!
-                                    // TODO: WRITE LOG OF CHANGES !!!
-                                    // TODO: WRITE LOG OF CHANGES !!!
+                                    sqlcmd.ExecuteNonQuery();
                                 }
+                                // TODO: WRITE LOG OF CHANGES !!!
+                                // TODO: WRITE LOG OF CHANGES !!!
+                                // TODO: WRITE LOG OF CHANGES !!!
+                                //}
                             }
 
                             // ALL ROWS INSERTED. NOW REPLACE SPECIFIC DOS SYMBOLS IN THEM :

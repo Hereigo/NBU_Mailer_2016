@@ -57,11 +57,8 @@ namespace NBU_Mailer_2016
                 // INSERT INTO NBU_ENVELOPES([FROM], [TO], [FILE_NAME], FILE_SIZE, FILE_BODY, FILE_DATE, DATE_SENT, DATE_DELIV, ENV_NAME, ENV_PATH, SPRUSNBU_BANK_ID)
                 // VALUES('Sender1', 'Reciever1', 'FileName1', 333, '1/1/1', '1/1/1', '1/1/1', 'E_1_UYTX.ERT', 'Some-path', 1)
 
-
-                // SELECT [id] FROM SPRUSNBU_BANKS WHERE [idhost] = 'ubla'
-
                 string insertString = "INSERT INTO " + envelopeTable +
-                " ([FROM], [TO], [FILE_NAME], [FILE_SIZE], [FILE_DATE], [DATE_SENT], [DATE_DELIV], [ENV_NAME], [ENV_PATH],"+
+                " ([FROM], [TO], [FILE_NAME], [FILE_SIZE], [FILE_DATE], [DATE_SENT], [DATE_DELIV], [ENV_NAME], [ENV_PATH]," +
                 " [SPRUSNBU_BANK_ID]" + fileBodyParam1 + ") VALUES" +
                 " (@FROM, @TO, @FILE_NAME, @FILE_SIZE, @FILE_DATE, @DATE_SENT, @DATE_DELIV, @ENV_NAME, @ENV_PATH," +
                 " @SPRUSNBU_BANK_ID" + fileBodyParam2 + ")";
@@ -73,45 +70,33 @@ namespace NBU_Mailer_2016
                 // TODO : FULL REBUILD !!!!!!!!
                 // TODO : FULL REBUILD !!!!!!!!
 
-                //string getIdForHost = "SELECT [ID] FROM SPRUSNBU_BANKS WHERE [IDHOST]='" + currentIdHost + "'";
+                string getIdForHost = "SELECT [ID] FROM SPRUSNBU_BANKS WHERE [IDHOST]='" + currentIdHost + "'";
 
-                // RETURN  -1  !!!!!!
-                // RETURN  -1  !!!!!!
-                // RETURN  -1  !!!!!!
-                // RETURN  -1  !!!!!!
-                // RETURN  -1  !!!!!!
-
-                string getIdForHost = "SELECT[ID] FROM SPRUSNBU_BANKS WHERE[IDHOST] = 'UiXQ'";
-
-                // TODO : SETUP DEFAULT + UPLOAD INTO DB RECORDS WITHOUT OKPO or MFO !!!!!!
-                // TODO : SETUP DEFAULT + UPLOAD INTO DB RECORDS WITHOUT OKPO or MFO !!!!!!
-                // TODO : SETUP DEFAULT + UPLOAD INTO DB RECORDS WITHOUT OKPO or MFO !!!!!!
-                // TODO : SETUP DEFAULT + UPLOAD INTO DB RECORDS WITHOUT OKPO or MFO !!!!!!
-
-                MessageBox.Show("QUERY : " + getIdForHost);
-                
                 using (SqlConnection sqlConn = new SqlConnection(_CONNSTR))
                 {
                     sqlConn.Open();
 
-                    int IdForHost = 1;
+                    int bankIdForHost = 0;
+                    // ID = 0 FOR NON-EXISTENT SENDER !!!
 
                     using (SqlCommand cmd = new SqlCommand(getIdForHost, sqlConn))
                     {
-                        IdForHost = cmd.ExecuteNonQuery();
-
-                        MessageBox.Show("REZULT ID = " + IdForHost);
+                        try
+                        {
+                            bankIdForHost = ((int)cmd.ExecuteScalar());
+                        }
+                        catch (Exception exc)
+                        {
+                            // TODO : PROCEED ERRORS !!!!!!!
+                            // TODO : PROCEED ERRORS !!!!!!!
+                            // TODO : PROCEED ERRORS !!!!!!!
+                            // TODO : PROCEED ERRORS !!!!!!!
+                        }
                     }
-
-                    // ?????
-                    // ?????
-                    // ?????
-                    sqlConn.Close();
-                    sqlConn.Open();
 
                     using (SqlCommand cmd = new SqlCommand(insertString, sqlConn))
                     {
-                        cmd.Parameters.AddWithValue("@SPRUSNBU_BANK_ID", 13);
+                        cmd.Parameters.AddWithValue("@SPRUSNBU_BANK_ID", bankIdForHost);
                         cmd.Parameters.AddWithValue("@FILE_BODY", fileBody);
                         cmd.Parameters.AddWithValue("@FROM", env.sendFromAddress);
                         cmd.Parameters.AddWithValue("@TO", env.recieveAddress);
