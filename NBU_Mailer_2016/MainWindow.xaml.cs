@@ -10,10 +10,6 @@ using System.Windows.Threading;
 
 namespace NBU_Mailer_2016
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-
     [Serializable]
     class AppSettings : ISerializable
     {
@@ -160,8 +156,6 @@ namespace NBU_Mailer_2016
             "\\USERD\\Vsem\\unknown\\",
             "\\USERD\\unknown\\",
             "\\USERD\\TEST\\"
-                //  DEBUGGING !!!!!!!!!!!!!!
-                //  DEBUGGING !!!!!!!!!!!!!!
                 //  DEBUGGING !!!!!!!!!!!!!!
                 //  DEBUGGING !!!!!!!!!!!!!!
                 //  DEBUGGING !!!!!!!!!!!!!!
@@ -346,8 +340,6 @@ namespace NBU_Mailer_2016
                         File.AppendAllText(log4sprusnbu, "\r\n" + DateTime.Now + " - " + exc.Message);
                     }
                 }
-
-                ///////////////////////////////////////////////////////////
                 ///////////////////////////////////////////////////////////
                 ///////////////////////////////////////////////////////////
 
@@ -541,14 +533,6 @@ namespace NBU_Mailer_2016
                     }
                     else
                     {
-                        // W A R N I N G !!!!!!!!!!!!!!!!!!!!
-                        // W A R N I N G !!!!!!!!!!!!!!!!!!!!
-                        // W A R N I N G !!!!!!!!!!!!!!!!!!!!
-                        // W A R N I N G !!!!!!!!!!!!!!!!!!!!
-                        // W A R N I N G !!!!!!!!!!!!!!!!!!!!
-
-                        
-
                         string connString = "Server=" + _SERVER + "; Database=" + _DATABASE + "; Uid=" + dbLogin + "; Pwd=" + dbPassw + "";
 
                         UploadDbfIntoSql uploadDbf = new UploadDbfIntoSql();
@@ -588,7 +572,6 @@ namespace NBU_Mailer_2016
                 nLogger.Error("{0}() - {1}", methodName, ex.Message);
             }
         }
-
 
 
         // TODO: CHECK LOG IF ENVEL NOT LOADED YET !!!
