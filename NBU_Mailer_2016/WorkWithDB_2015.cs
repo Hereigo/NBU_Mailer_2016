@@ -119,7 +119,6 @@ namespace NBU_Mailer_2016
         }
 
 
-
         // UPLOAD DBF INTO DB AND FIX CHARACTERS :
         public string UpdateSprusnbuFromDbf(string tableForUpdate, string fileDbfFolder, string fileDbf)
         {
@@ -148,7 +147,6 @@ namespace NBU_Mailer_2016
                     sqlConn.Open();
 
                     // CLEAR SPRUSNBU TABLE BEFORE FILLING IT !!!
-
                     SqlCommand sqlCmd = sqlConn.CreateCommand();
                     sqlCmd.CommandText = "DELETE FROM " + tableForUpdate;
                     sqlCmd.ExecuteNonQuery();
@@ -196,7 +194,7 @@ namespace NBU_Mailer_2016
                 "UPDATE " + tableName + " SET FNHOST = REPLACE(FNHOST, 'Ў', 'І')" +
                 "UPDATE " + tableName + " SET KFASE = REPLACE(KFASE, '°', 'Ї')" +
                 "UPDATE " + tableName + " SET KFASE = REPLACE(KFASE, 'Ў', 'І')" +
-                "INSERT INTO " + tableName + " (IDHOST)VALUES('U000')";
+                "INSERT INTO " + tableName + " (IDHOST, KFASE) VALUES ('U000', 'Оновлено : " + DateTime.Now.ToString("yyyy-MM-dd") + "')";
             //   TEMPORARY: SPECIAL FOR MY FIELDS TO DIVIDE BETWEEN DATES
             //   TEMPORARY: SPECIAL FOR MY FIELDS TO DIVIDE BETWEEN DATES
             //   TEMPORARY: SPECIAL FOR MY FIELDS TO DIVIDE BETWEEN DATES
@@ -242,11 +240,11 @@ namespace NBU_Mailer_2016
                     fileBodyParam1 = "";
                     fileBodyParam2 = "";
 
-                    nLogger.Error("{0}() - File Not Found {1} From Packet - {2}", 
+                    nLogger.Error("{0}() - File Not Found {1} From Packet - {2}",
                         methodName, env.fileLocation, env.envelopeName);
                 }
                 else
-                { 
+                {
                     FileStream fs = new FileStream(env.fileLocation, FileMode.Open, FileAccess.Read);
                     int fileSize = (int)fs.Length;
                     fileBody = new byte[fileSize];

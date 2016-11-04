@@ -52,6 +52,8 @@
                         {
                             sqlConnect.Open();
 
+                            string insertUpdateCmd = "";
+
                             // row[dt.Columns[0]] - IDHOST - nvarchar(6)
                             // row[dt.Columns[2]] - FNHOST - nvarchar(50)
                             // row[dt.Columns[5]] - MFOM  - integer
@@ -68,6 +70,7 @@
                                 // OR may be it is NEEDLESS ?
                                 // if (mfom > 0 || okpo > 0)
                                 // {
+
                                 string idHost = row[dt.Columns[0]].ToString(); // ID !!!
 
                                 string fnHost = row[dt.Columns[2]].ToString().ToString().Replace('\'', '=').Replace('"', '=');
@@ -78,14 +81,14 @@
                                 // IF @@ROWCOUNT = 0
                                 // INSERT INTO Table1 VALUES (…)
 
-                                string insertUpdateCmd = "UPDATE " + table + " SET " +
-                                    "MFOM = '" + mfom + "', OKPO = '" + okpo + "', FNHOST = '" + fnHost +
-                                    "', KTELE = '" + kTele + "', KFASE = '" + kFase +
-                                    "' WHERE IDHOST = '" + idHost +
-                                    "' IF @@ROWCOUNT = 0 INSERT INTO " + table +
-                                    " (IDHOST, MFOM, OKPO, KTELE, FNHOST, KFASE, PARTNER) VALUES (" +
-                                    "'" + idHost + "', " + "'" + mfom + "', " + "'" + okpo + "', " +
-                                    "'" + kTele + "', " + "'" + fnHost + "', " + "'" + kFase + "', " + 0 + ")";
+                                insertUpdateCmd = "UPDATE " + table + " SET " +
+                                                "MFOM = '" + mfom + "', OKPO = '" + okpo + "', FNHOST = '" + fnHost +
+                                                "', KTELE = '" + kTele + "', KFASE = '" + kFase +
+                                                "' WHERE IDHOST = '" + idHost +
+                                                "' IF @@ROWCOUNT = 0 INSERT INTO " + table +
+                                                " (IDHOST, MFOM, OKPO, KTELE, FNHOST, KFASE, PARTNER) VALUES (" +
+                                                "'" + idHost + "', " + "'" + mfom + "', " + "'" + okpo + "', " +
+                                                "'" + kTele + "', " + "'" + fnHost + "', " + "'" + kFase + "', " + 0 + ")";
                                 // TODO: USE STRINGBUILDER !!!
                                 // TODO: USE STRINGBUILDER !!!
                                 // TODO: USE STRINGBUILDER !!!
@@ -99,6 +102,17 @@
                                 // TODO: WRITE LOG OF CHANGES !!!
                                 //}
                             }
+
+
+                            insertUpdateCmd = "UPDATE " + table + " SET " +
+                                "KTELE = '" + DateTime.Now.ToString("yyyy-MM-dd") + "' WHERE IDHOST = 'U000'";
+                            
+                            using (SqlCommand sqlcmd = new SqlCommand(insertUpdateCmd, sqlConnect))
+                            {
+                                sqlcmd.ExecuteNonQuery();
+                            }
+
+
 
                             // ALL ROWS INSERTED. NOW REPLACE SPECIFIC DOS SYMBOLS IN THEM :
 

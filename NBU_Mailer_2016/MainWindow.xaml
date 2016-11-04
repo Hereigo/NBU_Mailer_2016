@@ -6,21 +6,43 @@
         xmlns:local="clr-namespace:NBU_Mailer_2016"
         mc:Ignorable="d"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
-        Title="NBU-Mail Uploader (Plakhtiy A.Net Development © 2016)" Height="350" Width="579.802" Icon="Envelope.ico">
+        Title="NBU-Mail Uploader (Plakhtiy A.Net Development © 2016)" Height="378" Width="579.802" Icon="Envelope.ico">
     <Grid>
-        <TextBox x:Name="textBox_4_Tests_Only" Margin="10,69,10,72" TextWrapping="Wrap" Text="TODAY ENVELOPES:" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto" FontFamily="Consolas"/>
+
         <Button x:Name="btnShowSelectedDateEnv" Content="Show For Date" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,10" Width="93" Height="25" RenderTransformOrigin="0.822,0.448" Click="btnShowSelectedDateEnv_Click"/>
         <DatePicker x:Name="dataPicker" HorizontalAlignment="Left" Margin="10,0,0,40" VerticalAlignment="Bottom" SelectedDate="{x:Static sys:DateTime.Now}" Width="105"/>
-        <TextBox x:Name="textBoxForStartDir" HorizontalAlignment="Stretch" Height="23" Margin="10,10,108,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" ToolTip="Press Button To Set Start Folder." UndoLimit="5" IsReadOnly="True"/>
-        <Button x:Name="btnSelectStartDir" Content="Select Start Dir" HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Top" Width="93" Height="23" Click="btnSelectStartDir_Click"/>
+        <TextBox x:Name="textBoxForStartDir" HorizontalAlignment="Stretch" Height="23" Margin="10,10,183,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" ToolTip="Press Button To Set Start Folder." UndoLimit="5" IsReadOnly="True"/>
+        <Button x:Name="btnSelectStartDir" Content="Select &quot;NBUMAIL&quot; Folder !" HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Top" Width="163" Height="23" Click="btnSelectStartDir_Click" FontWeight="Bold"/>
         <Label x:Name="labelForTimer" Content="Next Autorun at 23:58" HorizontalAlignment="Stretch" Margin="108,0,175,10" VerticalAlignment="Bottom" Height="24" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
         <Button x:Name="btnSprusnbuUpd_OLD" Content="Sprusnbu.DBF into PROM!" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,178,40" Width="152" Height="26" RenderTransformOrigin="0.822,0.448" Click="btnSprusnbuUpd_Click" />
-        <Label x:Name="loginLabel" Content="Login For SQL :" HorizontalAlignment="Left" Margin="10,38,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="passwLabel" Content="Password For SQL :" HorizontalAlignment="Left" Margin="185,38,0,0" VerticalAlignment="Top"/>
-        <PasswordBox x:Name="passwordBoxLogin" HorizontalAlignment="Left" Margin="105,42,0,0" VerticalAlignment="Top" Width="75" Height="20"/>
-        <PasswordBox x:Name="passwordBoxPassw" HorizontalAlignment="Left" Margin="300,42,0,0" VerticalAlignment="Top" Width="75" Height="20"/>
+        <Label x:Name="loginLabel" Content="Login For SQL :" HorizontalAlignment="Left" Margin="10,124,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="passwLabel" Content="Password For SQL :" HorizontalAlignment="Left" Margin="185,124,0,0" VerticalAlignment="Top"/>
+        <PasswordBox x:Name="passwordBoxLogin" HorizontalAlignment="Left" Margin="105,128,0,0" VerticalAlignment="Top" Width="75" Height="20"/>
+        <PasswordBox x:Name="passwordBoxPassw" HorizontalAlignment="Left" Margin="300,128,0,0" VerticalAlignment="Top" Width="75" Height="20"/>
+
+        <Button x:Name="btn_SaveSqlConfig" Content="Save SQL Serttings" HorizontalAlignment="Right" Margin="0,125,10,0" VerticalAlignment="Top" Width="127" Height="23" Click="btn_SaveSqlConfig_Click"/>
+
         <Button x:Name="btnViewUploaded" Content="View Uploaded Log" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="117" Height="26" Click="btnViewUploaded_Click"/>
         <Button x:Name="btnSprusnbuUpd_NEW" Content="Sprusnbu.DBF into DEVELOP!" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,10,40" Width="163" Height="26" RenderTransformOrigin="0.822,0.448" Click="NewSprusnbuIntoSql_Click" />
+
+        <Label x:Name="lbl_Server" Content="SQL Server:" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="txt_Server" HorizontalAlignment="Left" Height="23" Margin="82,43,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="138"/>
+
+        <Label x:Name="lbl_Database" Content="Database:" HorizontalAlignment="Left" Margin="228,41,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="txt_Database" HorizontalAlignment="Left" Height="23" Margin="300,43,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+
+        <Button x:Name="btn_LoadSqlConfig" Content="Load SQL Serttings" HorizontalAlignment="Right" Margin="0,44,10,0" VerticalAlignment="Top" Width="127" Height="23" Click="btn_LoadSqlConfig_Click"/>
+
+        <GroupBox x:Name="groupBox" Header="SQL DB TABLES :" Margin="14,70,10,0" VerticalAlignment="Top" Height="49" Background="#FFE8E8E8" FontWeight="Bold"/>
+
+        <Label x:Name="lbl_Sprusnbu" Content="Sprusnbu (banks):" HorizontalAlignment="Left" Margin="25,85,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="txt_Sprusnbu" HorizontalAlignment="Left" Height="23" Margin="134,88,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="180"/>
+
+        <Label x:Name="lbl_TabInbox" Content="Inbox:" HorizontalAlignment="Left" Margin="321,85,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="txt_TabInbox" HorizontalAlignment="Left" Height="23" Margin="370,88,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="180"/>
+
+        <TextBox x:Name="textBox_4_Tests_Only" Margin="10,155,10,72" TextWrapping="Wrap" Text="TODAY ENVELOPES:" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto" FontFamily="Consolas"/>
+
         <!--<CheckBox x:Name="checkBoxLogPasEdit" Content="Allow Editing Login and Passw." HorizontalAlignment="Left" Margin="380,44,0,0" VerticalAlignment="Top" 
         Width="182" Checked="checkBoxLogPasEdit_Checked" Unchecked="checkBoxLogPasEdit_Unchecked"/>-->
     </Grid>

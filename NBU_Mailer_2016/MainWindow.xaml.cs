@@ -3,6 +3,8 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -11,30 +13,128 @@ namespace NBU_Mailer_2016
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
+
+    [Serializable]
+    class AppSettings : ISerializable
+    {
+        public string srvName;
+        public string dbName;
+        public string tabSprus;
+        public string tabInbox;
+        public string tabOutbox;
+
+        public AppSettings()
+        {
+            srvName = "";
+            dbName = "";
+            tabSprus = "";
+            tabInbox = "";
+            tabOutbox = "";
+        }
+
+        public AppSettings(SerializationInfo info, StreamingContext context)
+        {
+            srvName = info.GetString("srvName");
+            dbName = info.GetString("dbName");
+            tabSprus = info.GetString("tabSprus");
+            tabInbox = info.GetString("tabInbox");
+        }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("srvName", srvName);
+            info.AddValue("dbName", dbName);
+            info.AddValue("tabSprus", tabSprus);
+            info.AddValue("tabInbox", tabInbox);
+        }
+    }
+
     public partial class MainWindow : Window
     {
-        #region SET ALL PATHES HERE :
+        static string _SERVER = "";
+        static string _DATABASE = "";
+        static string _SPRUSNBU_2014 = "SPRUSNBU$";
+        static string _SPRUSNBU_2016 = "";
+        static string _ENVELOPE_TBL = "";
 
-        // TODO: WARNING !!!
-        // TODO: WARNING !!!
-        // TODO: WARNING !!!
+        string appConfigFile = "C:\\NBUMAIL\\NBU_Mailer_2016.cfg";
+        Stream stream;
+        AppSettings setts = new AppSettings();
+        BinaryFormatter binFormatter = new BinaryFormatter();
 
-        const string _SERVER = "MAIN";
+        private void btn_LoadSqlConfig_Click(object sender, RoutedEventArgs e)
+        {
+            LoadSqlConnectSettings();
+        }
 
-        const string _DATABASE = "Andrew2"; // ANDREW
+        private void LoadSqlConnectSettings()
+        {
+            try
+            {
+                if (!File.Exists(appConfigFile))
+                {
+                    MessageBox.Show("В директории NBUMAIL файл NBU_Mailer_2016.cfg не найден!");
+                }
+                else
+                {
+                    if (MessageBox.Show("Загрузить параметры из конфиг-файла?", "ВНИМАНИЕ!", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                    {
+                        stream = File.Open(appConfigFile, FileMode.Open);
+                        setts = (AppSettings)binFormatter.Deserialize(stream);
+                        stream.Close();
 
-        const string _SPRUSNBU_TBL = "SPRUSNBU"; // SPRUSNBU$
+                        _SERVER = setts.srvName;
+                        txt_Server.Text = setts.srvName;
 
-        const string _ENVELOPE_TBL = "NBU_ENVELOPES";
+                        _DATABASE = setts.dbName;
+                        txt_Database.Text = setts.dbName;
 
-        readonly string textBoxClearHeader = Environment.NewLine + "SET LOGIN AND PASSWORD BEFORE USE !!!" +
-                Environment.NewLine + Environment.NewLine + "Database = " + _DATABASE + " !!!" +
-                Environment.NewLine + Environment.NewLine + "Table is = " + _SPRUSNBU_TBL + " !!!" +
-                Environment.NewLine + Environment.NewLine + "TODAY ENVELOPES:";
+                        _SPRUSNBU_2016 = setts.tabSprus;
+                        txt_Sprusnbu.Text = setts.tabSprus;
 
-        // TODO: WARNING !!!
-        // TODO: WARNING !!!
-        // TODO: WARNING !!!
+                        _ENVELOPE_TBL = setts.tabInbox;
+                        txt_TabInbox.Text = setts.tabInbox;
+
+                        MessageBox.Show("Настройки загружены.");
+                    }
+                }
+            }
+            catch (Exception exc)
+            {
+                MessageBox.Show(exc.Message, "ERROR!", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void btn_SaveSqlConfig_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (MessageBox.Show("Перезаписать конфиг-файл текущими параметрами?",
+                    "ВНИМАНИЕ!", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                {
+                    setts.srvName = txt_Server.Text;
+                    setts.dbName = txt_Database.Text;
+                    setts.tabSprus = txt_Sprusnbu.Text;
+                    setts.tabInbox = txt_TabInbox.Text;
+
+                    stream = File.Open(appConfigFile, FileMode.Create);
+                    binFormatter.Serialize(stream, setts);
+                    stream.Close();
+
+                    MessageBox.Show("Настройки сохранены.");
+                }
+            }
+            catch (Exception exc)
+            {
+                MessageBox.Show(exc.Message, "ERROR!", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        public static byte timerMinutes = 15;  // 15 minutes should be by default.
+
+        string textBoxClearHeader = Environment.NewLine + "SET LOGIN AND PASSWORD BEFORE USE !!!" +
+                Environment.NewLine + Environment.NewLine + "TODAY ENVELOPES:" + Environment.NewLine +
+            "============================================";
 
         public static Logger nLogger = LogManager.GetCurrentClassLogger();
 
@@ -66,8 +166,6 @@ namespace NBU_Mailer_2016
                 //  DEBUGGING !!!!!!!!!!!!!!
                 //  DEBUGGING !!!!!!!!!!!!!!
         };
-        #endregion
-
 
         // SELECT START FOLDER PATH :
         private void btnSelectStartDir_Click(object sender, RoutedEventArgs e)
@@ -102,6 +200,9 @@ namespace NBU_Mailer_2016
         private void InitializeStartParams()
         {
             string methodName = MethodInfo.GetCurrentMethod().Name;
+
+            LoadSqlConnectSettings();
+
             try
             {
                 if (!File.Exists(settsFile))
@@ -139,8 +240,6 @@ namespace NBU_Mailer_2016
 
             textBox_4_Tests_Only.Text = textBoxClearHeader;
 
-            byte timerMinutes = 15;  // 15 minutes should be by default.
-
             DispatcherTimer dispTimer = new DispatcherTimer();
             dispTimer.Interval = new TimeSpan(0, timerMinutes, 0);
             dispTimer.Tick += RunEveryFifteenMin;
@@ -166,6 +265,92 @@ namespace NBU_Mailer_2016
 
             if (DateTime.Now.Hour > 7)
             {
+                // TODO:  TEMPORARY AUTO SPRUSNBU UPLOADER !!!!!
+                // TODO:  TEMPORARY AUTO SPRUSNBU UPLOADER !!!!!
+                // TODO:  TEMPORARY AUTO SPRUSNBU UPLOADER !!!!!
+
+                string dir4sprusnbu = "C:\\NBUMAIL\\SPRUSNBD4SQL\\";
+
+                string log4sprusnbu = "NBU_Mailer_2016_Sprusnbu_Upload.log";
+
+                string currentSprusFile = "SPRUSNBU.DBF";
+
+                string todaySprusFilePath = dir4sprusnbu + DateTime.Now.ToString("yy-MM-dd") + ".SPRUSNBU.DBF";
+
+                if ((DateTime.Now.Hour == 11 || DateTime.Now.Hour == 15) && DateTime.Now.Minute > 40)
+                {
+                    try
+                    {
+                        if (!Directory.Exists(dir4sprusnbu)) Directory.CreateDirectory(dir4sprusnbu);
+
+                        bool currSprusAlreadyLoad = false;
+
+                        FileInfo[] oldSprusFiles = new DirectoryInfo(dir4sprusnbu).GetFiles("*.dbf");
+
+                        DateTime currSprusDate = new FileInfo("C:\\NBUMAIL\\" + currentSprusFile).LastWriteTime;
+
+                        // MessageBox.Show(oldSprusFiles.Length + " files in " + dir4sprusnbu);
+
+                        foreach (FileInfo file in oldSprusFiles)
+                        {
+                            if (file.LastWriteTime == currSprusDate)
+                            {
+                                currSprusAlreadyLoad = true;
+                                break;
+                            }
+                        }
+
+                        if (!currSprusAlreadyLoad)
+                        {
+                            // CREATE TEMPORARY FILE FOR ODBC UPLOADING :
+                            File.Copy("C:\\NBUMAIL\\" + currentSprusFile, dir4sprusnbu + currentSprusFile);
+
+                            string dbLogin = passwordBoxLogin.Password.Trim();
+                            string dbPassw = passwordBoxPassw.Password.Trim();
+
+                            // UPLOAD IN SQL - UPDATE 2016 !!!
+                            // UPLOAD IN SQL - UPDATE 2016 !!!
+
+                            string table = "SPRUSNBU_BANKS";
+
+                            string connString = "Server=" + _SERVER + "; Database=" + _DATABASE + "; Uid=" + dbLogin + "; Pwd=" + dbPassw + "";
+
+                            UploadDbfIntoSql uploadDbf = new UploadDbfIntoSql();
+
+
+                            // UPLOAD 2 =SPRUSNBU= 4 NEW 2016 :
+
+                            string uploadRez = uploadDbf.ReadDbfAndInsert(dir4sprusnbu + currentSprusFile, _DATABASE, table, connString);
+
+                            File.AppendAllText(log4sprusnbu, "\r\n" + DateTime.Now + " - " + uploadRez);
+
+                            // UPLOAD 2 =SPRUSNBU_BANKS= 4 OLD 2015
+
+                            // UPLOAD IN SQL - OVERWRITE 2014 !!!
+                            // UPLOAD IN SQL - OVERWRITE 2014 !!!
+
+                            WorkWithDB_2015 workWithDB = new WorkWithDB_2015(_DATABASE, dbLogin, dbPassw);
+
+                            string uploadRez2014 = workWithDB.UpdateSprusnbuFromDbf(_SPRUSNBU_2014, dir4sprusnbu, currentSprusFile);
+
+                            File.AppendAllText(log4sprusnbu, "\r\n" + DateTime.Now + " - " + uploadRez2014);
+
+                            System.Threading.Thread.Sleep(4000);
+
+                            // STORE TEMPORARY FILE FOR NEXT TIME CHECKING :
+                            File.Move(dir4sprusnbu + currentSprusFile, todaySprusFilePath);
+                        }
+                    }
+                    catch (Exception exc)
+                    {
+                        File.AppendAllText(log4sprusnbu, "\r\n" + DateTime.Now + " - " + exc.Message);
+                    }
+                }
+
+                ///////////////////////////////////////////////////////////
+                ///////////////////////////////////////////////////////////
+                ///////////////////////////////////////////////////////////
+
                 ProcessEnvelopes();
             }
         }
@@ -200,7 +385,9 @@ namespace NBU_Mailer_2016
                     {
                         WorkWithDB_2015 workWithDB = new WorkWithDB_2015(_DATABASE, dbLogin, dbPassw);
 
-                        labelForTimer.Content = "Next Autorun at - " + DateTime.Now.AddMinutes(15).ToShortTimeString();
+                        labelForTimer.Content = "Run Every " + timerMinutes + " min. Next Autorun at " +
+                                        DateTime.Now.AddMinutes(timerMinutes).ToString("HH:mm:ss");
+                        // "Next Autorun at - " + DateTime.Now.AddMinutes(15).ToShortTimeString();
 
                         // GET TODAY ENVELOPES FROM TODAY-FOLDER (OR ANOTHER SELECTED DATE) :
 
@@ -240,7 +427,7 @@ namespace NBU_Mailer_2016
 
                                     string connString = "Server=" + _SERVER + "; Database=" + _DATABASE + "; Uid=" + dbLogin + "; Pwd=" + dbPassw + "";
 
-                                    if (upload.EnvelopeUpload("NBU_ENVELOPES", env, connString) != 0)
+                                    if (upload.EnvelopeUpload(_ENVELOPE_TBL, env, connString) != 0)
                                     // if (workWithDB.EnvelopeUpload(_ENVELOPE_TBL, env) != 0)  // OLD 2015 VERSION;
                                     {
                                         // IT MEANS - UPLOADED SUCCESSFULLY !
@@ -295,30 +482,37 @@ namespace NBU_Mailer_2016
         // MANUAL !!! UPLOAD "SPRUSNBU" INTO !!! OLD PROM !!! SQL FROM DBF:
         private void btnSprusnbuUpd_Click(object sender, RoutedEventArgs e)
         {
-            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
-            dlg.DefaultExt = ".dbf";
-            dlg.Filter = "DBF Files Only (*.dbf)|*.dbf";
-
-            bool? dbfFileSelected = dlg.ShowDialog();
-
-            if (dbfFileSelected == true)
+            try
             {
-                FileInfo dbfFile = new FileInfo(dlg.FileName);
+                Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+                dlg.DefaultExt = ".dbf";
+                dlg.Filter = "DBF Files Only (*.dbf)|*.dbf";
 
-                string dbLogin = passwordBoxLogin.Password.Trim();
-                string dbPassw = passwordBoxPassw.Password.Trim();
+                bool? dbfFileSelected = dlg.ShowDialog();
 
-                if (dbLogin.Length < 1 || dbPassw.Length < 1)
+                if (dbfFileSelected == true)
                 {
-                    MessageBox.Show("Set Login & Password Before!");
-                }
-                else
-                {
-                    WorkWithDB_2015 workWithDB = new WorkWithDB_2015(_DATABASE, dbLogin, dbPassw);
+                    FileInfo dbfFile = new FileInfo(dlg.FileName);
 
-                    MessageBox.Show(workWithDB.UpdateSprusnbuFromDbf(_SPRUSNBU_TBL,
-                        dbfFile.Directory.ToString(), dbfFile.Name));
+                    string dbLogin = passwordBoxLogin.Password.Trim();
+                    string dbPassw = passwordBoxPassw.Password.Trim();
+
+                    if (dbLogin.Length < 1 || dbPassw.Length < 1)
+                    {
+                        MessageBox.Show("Set Login & Password Before!");
+                    }
+                    else
+                    {
+                        WorkWithDB_2015 workWithDB = new WorkWithDB_2015(_DATABASE, dbLogin, dbPassw);
+
+                        MessageBox.Show(workWithDB.UpdateSprusnbuFromDbf(_SPRUSNBU_2014,
+                            dbfFile.Directory.ToString(), dbfFile.Name));
+                    }
                 }
+            }
+            catch (Exception exc)
+            {
+                MessageBox.Show(exc.Message);
             }
         }
 
@@ -353,13 +547,13 @@ namespace NBU_Mailer_2016
                         // W A R N I N G !!!!!!!!!!!!!!!!!!!!
                         // W A R N I N G !!!!!!!!!!!!!!!!!!!!
 
-                        string table = "SPRUSNBU_BANKS";
+                        
 
                         string connString = "Server=" + _SERVER + "; Database=" + _DATABASE + "; Uid=" + dbLogin + "; Pwd=" + dbPassw + "";
 
                         UploadDbfIntoSql uploadDbf = new UploadDbfIntoSql();
 
-                        string uploadRez = uploadDbf.ReadDbfAndInsert(dlg.FileName, _DATABASE, table, connString);
+                        string uploadRez = uploadDbf.ReadDbfAndInsert(dlg.FileName, _DATABASE, _SPRUSNBU_2016, connString);
 
                         MessageBox.Show(uploadRez);
                     }
@@ -394,6 +588,8 @@ namespace NBU_Mailer_2016
                 nLogger.Error("{0}() - {1}", methodName, ex.Message);
             }
         }
+
+
 
         // TODO: CHECK LOG IF ENVEL NOT LOADED YET !!!
         // TODO: CHECK LOG IF ENVEL NOT LOADED YET !!!
